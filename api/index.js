@@ -14,7 +14,7 @@ const app = express();
 
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
-    ? process.env.FRONTEND_URL?.split(',') || false
+    ? process.env.FRONTEND_URL?.split(',') || true
     : true,
   credentials: true,
   optionsSuccessStatus: 200,
@@ -32,23 +32,30 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-const MONGODB_URI = process.env.MONGODB_URI;
-if (!MONGODB_URI) {
-  console.error('MONGODB_URI environment variable is required');
-  process.exit(1);
-}
+let mongooseConnected = false;
 
-mongoose.connect(MONGODB_URI, {
-  retryWrites: true,
-  w: 'majority',
-})
-.then(() => console.log('MongoDB connected'))
-.catch(err => {
-  console.error('MongoDB connection error:', err.message);
-  if (process.env.NODE_ENV === 'production') {
-    process.exit(1);
+const connectDB = async () => {
+  if (mongooseConnected) {
+    return;
   }
-});
+  
+  const MONGODB_URI = process.env.MONGODB_URI;
+  if (!MONGODB_URI) {
+    console.error('MONGODB_URI environment variable is required');
+    return;
+  }
+
+  try {
+    await mongoose.connect(MONGODB_URI, {
+      retryWrites: true,
+      w: 'majority',
+    });
+    mongooseConnected = true;
+    console.log('MongoDB connected');
+  } catch (err) {
+    console.error('MongoDB connection error:', err.message);
+  }
+};
 import authRoutes from '../server/routes/auth.js';
 import usersRoutes from '../server/routes/users.js';
 import tasksRoutes from '../server/routes/tasks.js';
@@ -60,6 +67,11 @@ import commentsRoutes from '../server/routes/comments.js';
 import templatesRoutes from '../server/routes/templates.js';
 import projectsRoutes from '../server/routes/projects.js';
 import dependenciesRoutes from '../server/routes/dependencies.js';
+
+app.use(async (req, res, next) => {
+  await connectDB();
+  next();
+});
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', usersRoutes);
@@ -83,12 +95,8 @@ app.use((err, req, res, next) => {
   });
 });
 
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../dist')));
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../dist/index.html'));
-  });
-}
-
-export default app;
+export default async (req, res) => {
+  await connectDB();
+  app(req, res);
+};
 
