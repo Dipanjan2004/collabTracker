@@ -5,7 +5,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { Notification } from '@/types';
-import { mockNotificationsApi } from '@/services/mockApi';
+import { notificationsApi } from '@/services/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -29,7 +29,7 @@ export function NotificationsDrawer({ open, onOpenChange }: NotificationsDrawerP
   useEffect(() => {
     const loadNotifications = async () => {
       if (open && user) {
-        const data = await mockNotificationsApi.getAll(user.id);
+        const data = await notificationsApi.getAll(user.id);
         setNotifications(data);
       }
     };
@@ -44,7 +44,7 @@ export function NotificationsDrawer({ open, onOpenChange }: NotificationsDrawerP
   }, [open, user]);
 
   const handleMarkAsRead = async (id: string) => {
-    await mockNotificationsApi.markAsRead(id);
+    await notificationsApi.markAsRead(id);
     setNotifications(prev =>
       prev.map(n => (n.id === id ? { ...n, read: true } : n))
     );
@@ -85,7 +85,7 @@ export function NotificationsDrawer({ open, onOpenChange }: NotificationsDrawerP
                   size="sm"
                   onClick={async () => {
                     const unread = notifications.filter(n => !n.read);
-                    await Promise.all(unread.map(n => mockNotificationsApi.markAsRead(n.id)));
+                    await Promise.all(unread.map(n => notificationsApi.markAsRead(n.id)));
                     setNotifications(prev => prev.map(n => ({ ...n, read: true })));
                   }}
                   className="text-xs"

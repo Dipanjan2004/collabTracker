@@ -62,14 +62,14 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-6">
+    <div className="min-h-screen bg-background flex items-center justify-center p-3 md:p-4">
+      <div className="w-full max-w-md space-y-4 md:space-y-6">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-gradient-primary mb-2">CollabTrack</h1>
-          <p className="text-muted-foreground">Create your account</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-gradient-primary mb-2">CollabTrack</h1>
+          <p className="text-sm md:text-base text-muted-foreground">Create your account</p>
         </div>
 
-        <Card className="glass-card p-6 space-y-6">
+        <Card className="glass-card p-4 md:p-6 space-y-4 md:space-y-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="name">Full Name</Label>

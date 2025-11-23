@@ -12,7 +12,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { ArrowLeft, CalendarIcon, Clock } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
-import { mockTasksApi, mockUsersApi } from '@/services/mockApi';
+import { tasksApi, usersApi } from '@/services/api';
 import { User, TaskStatus, TaskPriority } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -43,8 +43,8 @@ export default function EditTask() {
       setIsLoading(true);
       try {
         const [taskData, allUsers] = await Promise.all([
-          mockTasksApi.getById(id),
-          mockUsersApi.getAll(),
+          tasksApi.getById(id),
+          usersApi.getAll(),
         ]);
 
         if (!taskData) {
@@ -106,7 +106,7 @@ export default function EditTask() {
         deadline.setHours(23, 59, 0, 0);
       }
 
-      await mockTasksApi.update(id, {
+      await tasksApi.update(id, {
         title,
         description,
         assignedTo,

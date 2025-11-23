@@ -133,8 +133,6 @@ export const mockUsersApi = {
   
   invite: async (email: string, role: 'admin' | 'collaborator'): Promise<{ success: boolean }> => {
     await delay(400);
-    // Mock invite - in real app would send email
-    console.log(`Invite sent to ${email} as ${role}`);
     return { success: true };
   },
   
@@ -144,7 +142,6 @@ export const mockUsersApi = {
     const updatedUsers = users.filter(u => u.id !== userId);
     setStorageData(STORAGE_KEYS.USERS, updatedUsers);
     
-    // Also update tasks to remove this user from assignedTo arrays
     const tasks = getStorageData<Task>(STORAGE_KEYS.TASKS);
     const updatedTasks = tasks.map(task => ({
       ...task,

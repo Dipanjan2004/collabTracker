@@ -8,9 +8,9 @@ import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { ArrowLeft, Calendar, Clock, Tag, User, Paperclip, CheckCircle, XCircle, Trash2, Edit, Upload, X, MessageSquare, Send } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, Tag, User, Paperclip, CheckCircle, XCircle, Trash2, Edit, Upload, X, MessageSquare, Send, Timer, Play, Pause } from 'lucide-react';
 import { Task, ProgressLog, Comment } from '@/types';
-import { mockTasksApi, mockProgressApi, mockCommentsApi } from '@/services/mockApi';
+import { tasksApi, progressApi, commentsApi } from '@/services/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
@@ -58,22 +58,43 @@ export default function TaskDetail() {
   useEffect(() => {
     const loadTask = async () => {
       if (!id) return;
-      const [taskData, logs, commentsData] = await Promise.all([
-        mockTasksApi.getById(id),
-        mockProgressApi.getByTaskId(id),
-        mockCommentsApi.getByTaskId(id),
-      ]);
-      setTask(taskData);
-      setProgressLogs(logs);
-      setComments(commentsData);
-      
-      // Set percentage from latest log
-      if (logs.length > 0) {
-        setPercentageComplete(logs[0].percentageComplete);
+      try {
+        const [taskData, logs, commentsData] = await Promise.all([
+          tasksApi.getById(id),
+          progressApi.getByTaskId(id),
+          commentsApi.getByTaskId(id),
+        ]);
+        
+        if (!taskData) {
+          toast({
+            title: 'Error',
+            description: 'Task not found.',
+            variant: 'destructive',
+          });
+          navigate('/tasks');
+          return;
+        }
+        
+        setTask(taskData);
+        setProgressLogs(logs || []);
+        setComments(commentsData || []);
+        
+        // Set percentage from latest log
+        if (logs && logs.length > 0) {
+          setPercentageComplete(logs[0].percentageComplete);
+        }
+      } catch (error) {
+        console.error('Error loading task:', error);
+        toast({
+          title: 'Error',
+          description: error instanceof Error ? error.message : 'Failed to load task details.',
+          variant: 'destructive',
+        });
+        navigate('/tasks');
       }
     };
     loadTask();
-  }, [id]);
+  }, [id, navigate, toast]);
   
   // Timer effect
   useEffect(() => {
@@ -108,7 +129,7 @@ export default function TaskDetail() {
     const hours = trackedTime / 3600;
     
     try {
-      await mockProgressApi.create({
+      await progressApi.create({
         taskId: id,
         userId: user.id,
         date: new Date().toISOString(),
@@ -119,7 +140,7 @@ export default function TaskDetail() {
       });
       
       // Reload progress logs
-      const logs = await mockProgressApi.getByTaskId(id);
+      const logs = await progressApi.getByTaskId(id);
       setProgressLogs(logs);
       
       setIsTracking(false);
@@ -190,7 +211,7 @@ export default function TaskDetail() {
       // Convert files to base64 or store as URLs (for mock, we'll use file names)
       const attachmentUrls = attachments.map(file => URL.createObjectURL(file));
       
-      const newLog = await mockProgressApi.create({
+      const newLog = await progressApi.create({
         taskId: id,
         userId: user.id,
         date: new Date().toISOString(),
@@ -222,8 +243,8 @@ export default function TaskDetail() {
   };
 
   const handleApprove = async (logId: string) => {
-    await mockProgressApi.approve(logId, 'Great work!');
-    const logs = await mockProgressApi.getByTaskId(id!);
+    await progressApi.approve(logId, 'Great work!');
+    const logs = await progressApi.getByTaskId(id!);
     setProgressLogs(logs);
     toast({
       title: 'Progress approved',
@@ -232,8 +253,8 @@ export default function TaskDetail() {
   };
 
   const handleReject = async (logId: string) => {
-    await mockProgressApi.reject(logId, 'Please revise this.');
-    const logs = await mockProgressApi.getByTaskId(id!);
+    await progressApi.reject(logId, 'Please revise this.');
+    const logs = await progressApi.getByTaskId(id!);
     setProgressLogs(logs);
     toast({
       title: 'Progress rejected',
@@ -245,7 +266,7 @@ export default function TaskDetail() {
     if (!id) return;
     
     try {
-      await mockTasksApi.delete(id);
+      await tasksApi.delete(id);
       toast({
         title: 'Task deleted',
         description: 'The task has been deleted successfully.',
@@ -266,7 +287,7 @@ export default function TaskDetail() {
     
     setIsSubmittingComment(true);
     try {
-      const newComment = await mockCommentsApi.create(id, user.id, user.name, commentText);
+      const newComment = await commentsApi.create(id, user.id, user.name, commentText);
       setComments([...comments, newComment]);
       setCommentText('');
       
@@ -289,7 +310,7 @@ export default function TaskDetail() {
     if (!editCommentText.trim()) return;
     
     try {
-      const updated = await mockCommentsApi.update(commentId, editCommentText);
+      const updated = await commentsApi.update(commentId, editCommentText);
       setComments(prev => prev.map(c => c.id === commentId ? updated : c));
       setEditingCommentId(null);
       setEditCommentText('');
@@ -309,7 +330,7 @@ export default function TaskDetail() {
   
   const handleDeleteComment = async (commentId: string) => {
     try {
-      await mockCommentsApi.delete(commentId);
+      await commentsApi.delete(commentId);
       setComments(prev => prev.filter(c => c.id !== commentId));
       
       toast({
@@ -328,12 +349,16 @@ export default function TaskDetail() {
   if (!task) {
     return (
       <AppShell>
-        <div className="flex items-center justify-center h-64">
+        <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
           <div className="animate-pulse-glow w-16 h-16 rounded-full bg-primary/20" />
+          <p className="text-muted-foreground">Loading task details...</p>
         </div>
       </AppShell>
     );
   }
+
+  // Ensure assignedTo is an array
+  const assignedToArray = Array.isArray(task.assignedTo) ? task.assignedTo : [];
 
   const statusColors = {
     'todo': 'bg-muted',
@@ -351,19 +376,20 @@ export default function TaskDetail() {
 
   return (
     <AppShell>
-      <div className="space-y-6 animate-fade-in">
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" onClick={() => navigate('/tasks')}>
+      <div className="space-y-4 md:space-y-6 animate-fade-in">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2 md:gap-4 min-w-0 flex-1">
+            <Button variant="ghost" size="icon" onClick={() => navigate('/tasks')} className="flex-shrink-0">
               <ArrowLeft className="h-5 w-5" />
             </Button>
-            <h1 className="text-3xl font-bold">{task.title}</h1>
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold truncate">{task.title}</h1>
           </div>
           {user?.role === 'admin' && (
             <Button
               variant="outline"
-              onClick={() => navigate(`/tasks/${task.id}/edit`)}
-              className="flex-shrink-0"
+              onClick={() => task?.id && navigate(`/tasks/${task.id}/edit`)}
+              className="flex-shrink-0 w-full sm:w-auto"
+              size="sm"
             >
               <Edit className="h-4 w-4 mr-2" />
               Edit Task
@@ -372,22 +398,22 @@ export default function TaskDetail() {
         </div>
 
         {/* Task Meta */}
-        <Card className="glass-card p-6">
+        <Card className="glass-card p-4 md:p-6">
           <div className="space-y-4">
             <div>
               <Progress value={percentageComplete} className="h-3" />
               <p className="text-sm text-muted-foreground mt-2">{percentageComplete}% complete</p>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4">
               <div className="flex items-center gap-2">
-                <Badge className={statusColors[task.status]}>
-                  {task.status}
+                <Badge className={statusColors[task.status] || statusColors.todo}>
+                  {task.status || 'todo'}
                 </Badge>
               </div>
               <div className="flex items-center gap-2">
-                <Badge className={priorityColors[task.priority]}>
-                  {task.priority}
+                <Badge className={priorityColors[task.priority] || priorityColors.medium}>
+                  {task.priority || 'medium'}
                 </Badge>
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -398,17 +424,17 @@ export default function TaskDetail() {
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Clock className="h-4 w-4" />
-                {task.estimatedHours}h estimated
+                {task.estimatedHours || 0}h estimated
               </div>
             </div>
 
             <div>
               <p className="text-sm text-muted-foreground mb-2">Description</p>
-              <p className="text-foreground">{task.description}</p>
+              <p className="text-foreground">{task.description || 'No description provided.'}</p>
             </div>
 
             <div className="flex flex-wrap gap-2">
-              {task.tags.map((tag) => (
+              {task.tags && Array.isArray(task.tags) && task.tags.map((tag) => (
                 <Badge key={tag} variant="outline" className="gap-1">
                   <Tag className="h-3 w-3" />
                   {tag}
@@ -419,13 +445,13 @@ export default function TaskDetail() {
         </Card>
 
         {/* Time Tracker (Collaborator) */}
-        {user?.role === 'collaborator' && task.assignedTo.includes(user.id) && (
-          <Card className="glass-card p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold">Time Tracker</h2>
+        {user?.role === 'collaborator' && assignedToArray.includes(user.id) && (
+          <Card className="glass-card p-4 md:p-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-2">
+              <h2 className="text-lg md:text-xl font-semibold">Time Tracker</h2>
               <div className="flex items-center gap-2">
-                <Stopwatch className="h-5 w-5 text-primary" />
-                <span className="text-2xl font-bold font-mono">
+                <Timer className="h-4 w-4 md:h-5 md:w-5 text-primary" />
+                <span className="text-xl md:text-2xl font-bold font-mono">
                   {formatTime(trackedTime)}
                 </span>
               </div>
@@ -458,9 +484,9 @@ export default function TaskDetail() {
         )}
 
         {/* Submit Progress (Collaborator) */}
-        {user?.role === 'collaborator' && task.assignedTo.includes(user.id) && (
-          <Card className="glass-card p-6">
-            <h2 className="text-xl font-semibold mb-4">Submit Progress</h2>
+        {user?.role === 'collaborator' && assignedToArray.includes(user.id) && (
+          <Card className="glass-card p-4 md:p-6">
+            <h2 className="text-lg md:text-xl font-semibold mb-4">Submit Progress</h2>
             <form onSubmit={handleSubmitProgress} className="space-y-4">
               <div>
                 <label className="text-sm font-medium mb-2 block">Progress Description</label>
@@ -563,7 +589,7 @@ export default function TaskDetail() {
         )}
 
         {/* Comments Section */}
-        <Card className="glass-card p-6">
+        <Card className="glass-card p-4 md:p-6">
           <div className="flex items-center gap-2 mb-4">
             <MessageSquare className="h-5 w-5 text-primary" />
             <h2 className="text-xl font-semibold">Comments</h2>
@@ -666,7 +692,7 @@ export default function TaskDetail() {
 
         {/* Progress Timeline */}
         <div>
-          <h2 className="text-2xl font-semibold mb-4">Progress Timeline</h2>
+          <h2 className="text-xl md:text-2xl font-semibold mb-4">Progress Timeline</h2>
           <div className="space-y-4">
             {progressLogs.length === 0 ? (
               <Card className="glass-card p-8 text-center">
@@ -674,7 +700,7 @@ export default function TaskDetail() {
               </Card>
             ) : (
               progressLogs.map((log) => (
-                <Card key={log.id} className="glass-card p-6">
+                <Card key={log.id} className="glass-card p-4 md:p-6">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-3">
                       <User className="h-5 w-5 text-muted-foreground" />
@@ -787,7 +813,7 @@ export default function TaskDetail() {
             <AlertDialogHeader>
               <AlertDialogTitle>Delete Task?</AlertDialogTitle>
               <AlertDialogDescription>
-                Are you sure you want to delete <strong>{task.title}</strong>? This action cannot be undone and will remove all associated progress logs.
+                Are you sure you want to delete <strong>{task?.title || 'this task'}</strong>? This action cannot be undone and will remove all associated progress logs.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>

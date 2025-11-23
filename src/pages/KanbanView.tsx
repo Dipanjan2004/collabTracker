@@ -4,7 +4,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Task, TaskStatus } from '@/types';
-import { mockTasksApi } from '@/services/mockApi';
+import { tasksApi } from '@/services/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
@@ -47,7 +47,7 @@ export default function KanbanView() {
   useEffect(() => {
     const loadTasks = async () => {
       const filters = user?.role === 'collaborator' ? { assignedTo: user.id } : {};
-      const data = await mockTasksApi.getAll(filters);
+      const data = await tasksApi.getAll(filters);
       setTasks(data);
     };
     loadTasks();
@@ -71,7 +71,7 @@ export default function KanbanView() {
     }
 
     try {
-      const updatedTask = await mockTasksApi.update(draggedTask.id, {
+      const updatedTask = await tasksApi.update(draggedTask.id, {
         status: targetStatus,
       });
       
@@ -98,7 +98,7 @@ export default function KanbanView() {
     if (!taskToDelete) return;
     
     try {
-      await mockTasksApi.delete(taskToDelete);
+      await tasksApi.delete(taskToDelete);
       setTasks(tasks.filter(t => t.id !== taskToDelete));
       toast({
         title: 'Task deleted',

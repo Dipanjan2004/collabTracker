@@ -10,7 +10,7 @@ import { Task, ProgressLog, User, TaskStatus } from '@/types';
 import { formatDistanceToNow } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { mockUsersApi, mockTasksApi } from '@/services/mockApi';
+import { usersApi, tasksApi } from '@/services/api';
 
 interface TaskCardProps {
   task: Task;
@@ -53,7 +53,7 @@ export function TaskCard({ task, progressLogs = [], onDelete, onStatusChange, on
 
   useEffect(() => {
     const loadUsers = async () => {
-      const allUsers = await mockUsersApi.getAll();
+      const allUsers = await usersApi.getAll();
       const assigned = allUsers.filter(u => task.assignedTo.includes(u.id));
       setAssignedUsers(assigned);
     };
@@ -69,7 +69,7 @@ export function TaskCard({ task, progressLogs = [], onDelete, onStatusChange, on
   
   const handleStatusChange = async (newStatus: TaskStatus) => {
     try {
-      await mockTasksApi.update(task.id, { status: newStatus });
+      await tasksApi.update(task.id, { status: newStatus });
       if (onStatusChange) {
         onStatusChange(task.id, newStatus);
       }

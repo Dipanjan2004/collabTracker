@@ -14,7 +14,7 @@ import {
   UserX
 } from 'lucide-react';
 import { User } from '@/types';
-import { mockUsersApi } from '@/services/mockApi';
+import { usersApi } from '@/services/api';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import {
@@ -37,7 +37,7 @@ export default function Users() {
 
   useEffect(() => {
     const loadUsers = async () => {
-      const data = await mockUsersApi.getAll();
+      const data = await usersApi.getAll();
       setUsers(data);
     };
     loadUsers();
@@ -54,7 +54,7 @@ export default function Users() {
     if (!userToRemove) return;
     
     try {
-      await mockUsersApi.remove(userToRemove.id);
+      await usersApi.remove(userToRemove.id);
       setUsers(users.filter(u => u.id !== userToRemove.id));
       toast({
         title: 'User removed',
@@ -77,13 +77,13 @@ export default function Users() {
 
   return (
     <AppShell>
-      <div className="space-y-6 animate-fade-in">
-        <div className="flex items-center justify-between">
+      <div className="space-y-4 md:space-y-6 animate-fade-in">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div>
-            <h1 className="text-3xl font-bold mb-2">Users</h1>
-            <p className="text-muted-foreground">Manage team members and collaborators</p>
+            <h1 className="text-2xl md:text-3xl font-bold mb-2">Users</h1>
+            <p className="text-sm md:text-base text-muted-foreground">Manage team members and collaborators</p>
           </div>
-          <Button onClick={handleInvite} className="gap-2">
+          <Button onClick={handleInvite} className="gap-2 w-full sm:w-auto" size="sm">
             <UserPlus className="h-4 w-4" />
             Invite User
           </Button>

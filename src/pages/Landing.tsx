@@ -103,25 +103,6 @@ export default function Landing() {
               Sign In
             </Button>
           </div>
-
-          {/* Demo Credentials */}
-          <Card className="glass-card p-6 max-w-md mx-auto mt-12">
-            <h3 className="font-semibold mb-3 text-sm text-muted-foreground">Demo Login Credentials</h3>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between items-center p-2 rounded bg-muted/30">
-                <span className="text-muted-foreground">Admin:</span>
-                <code className="text-primary">demo.admin@collabtrack.app</code>
-              </div>
-              <div className="flex justify-between items-center p-2 rounded bg-muted/30">
-                <span className="text-muted-foreground">Collaborator:</span>
-                <code className="text-primary">aisha@demo.app</code>
-              </div>
-              <div className="flex justify-between items-center p-2 rounded bg-muted/30">
-                <span className="text-muted-foreground">Password:</span>
-                <code className="text-primary">DemoPass123</code>
-              </div>
-            </div>
-          </Card>
         </div>
       </section>
 

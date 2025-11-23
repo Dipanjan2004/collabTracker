@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User } from '@/types';
-import { mockAuthApi } from '@/services/mockApi';
+import { authApi } from '@/services/api';
 
 interface AuthContextType {
   user: User | null;
@@ -17,24 +17,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check for existing session
-    const currentUser = mockAuthApi.getCurrentUser();
+    const currentUser = authApi.getCurrentUser();
     setUser(currentUser);
     setIsLoading(false);
   }, []);
 
   const login = async (email: string, password: string) => {
-    const { user } = await mockAuthApi.login(email, password);
+    const { user } = await authApi.login(email, password);
     setUser(user);
   };
 
   const register = async (name: string, email: string, password: string) => {
-    const { user } = await mockAuthApi.register(name, email, password);
+    const { user } = await authApi.register(name, email, password);
     setUser(user);
   };
 
   const logout = () => {
-    mockAuthApi.logout();
+    authApi.logout();
     setUser(null);
   };
 

@@ -11,7 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { ArrowLeft, CalendarIcon, Clock } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
-import { mockTasksApi, mockUsersApi } from '@/services/mockApi';
+import { tasksApi, usersApi } from '@/services/api';
 import { User, TaskStatus, TaskPriority } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -35,7 +35,7 @@ export default function CreateTask() {
 
   useEffect(() => {
     const loadUsers = async () => {
-      const allUsers = await mockUsersApi.getAll();
+      const allUsers = await usersApi.getAll();
       setUsers(allUsers.filter(u => u.role === 'collaborator'));
     };
     loadUsers();
@@ -64,7 +64,7 @@ export default function CreateTask() {
         deadline.setHours(23, 59, 0, 0);
       }
 
-      const newTask = await mockTasksApi.create({
+      const newTask = await tasksApi.create({
         title,
         description,
         assignedTo,
@@ -95,16 +95,16 @@ export default function CreateTask() {
 
   return (
     <AppShell>
-      <div className="space-y-6 animate-fade-in max-w-3xl">
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => navigate('/tasks')}>
+      <div className="space-y-4 md:space-y-6 animate-fade-in max-w-3xl">
+        <div className="flex items-center gap-2 md:gap-4">
+          <Button variant="ghost" size="icon" onClick={() => navigate('/tasks')} className="flex-shrink-0">
             <ArrowLeft className="h-5 w-5" />
           </Button>
-          <h1 className="text-3xl font-bold">Create New Task</h1>
+          <h1 className="text-2xl md:text-3xl font-bold">Create New Task</h1>
         </div>
 
-        <Card className="glass-card p-6">
-          <form onSubmit={handleSubmit} className="space-y-6">
+        <Card className="glass-card p-4 md:p-6">
+          <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
             <div>
               <label className="text-sm font-medium mb-2 block">Title</label>
               <Input

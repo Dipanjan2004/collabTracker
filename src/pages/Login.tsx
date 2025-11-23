@@ -5,14 +5,16 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
+import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Shield, Users } from 'lucide-react';
 
 export default function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [isAdminMode, setIsAdminMode] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -38,40 +40,37 @@ export default function Login() {
     }
   };
 
-  const handleDemoLogin = async (role: 'admin' | 'collaborator') => {
-    setIsLoading(true);
-    const credentials = {
-      admin: { email: 'demo.admin@collabtrack.app', password: 'DemoPass123' },
-      collaborator: { email: 'aisha@demo.app', password: 'DemoPass123' },
-    };
-
-    try {
-      await login(credentials[role].email, credentials[role].password);
-      toast({
-        title: `Welcome, ${role}!`,
-        description: 'Demo login successful.',
-      });
-      navigate('/dashboard');
-    } catch (error) {
-      toast({
-        title: 'Login failed',
-        description: 'Demo login failed. Please try again.',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-6">
+    <div className="min-h-screen bg-background flex items-center justify-center p-3 md:p-4">
+      <div className="w-full max-w-md space-y-4 md:space-y-6">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-gradient-primary mb-2">CollabTrack</h1>
-          <p className="text-muted-foreground">Sign in to your account</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-gradient-primary mb-2">CollabTrack</h1>
+          <p className="text-sm md:text-base text-muted-foreground">Sign in to your account</p>
         </div>
 
-        <Card className="glass-card p-6 space-y-6">
+        <Card className="glass-card p-4 md:p-6 space-y-4 md:space-y-6">
+          {/* Role Toggle */}
+          <div className="flex items-center justify-center gap-2 md:gap-4 p-3 md:p-4 bg-muted/50 rounded-lg">
+            <div className="flex items-center gap-1 md:gap-2">
+              <Users className={`h-4 w-4 md:h-5 md:w-5 ${!isAdminMode ? 'text-primary' : 'text-muted-foreground'}`} />
+              <span className={`text-sm md:text-base font-medium ${!isAdminMode ? 'text-foreground' : 'text-muted-foreground'}`}>
+                <span className="hidden sm:inline">Login as </span>User
+              </span>
+            </div>
+            <Switch
+              checked={isAdminMode}
+              onCheckedChange={setIsAdminMode}
+              className="data-[state=checked]:bg-primary"
+            />
+            <div className="flex items-center gap-1 md:gap-2">
+              <Shield className={`h-4 w-4 md:h-5 md:w-5 ${isAdminMode ? 'text-primary' : 'text-muted-foreground'}`} />
+              <span className={`text-sm md:text-base font-medium ${isAdminMode ? 'text-foreground' : 'text-muted-foreground'}`}>
+                <span className="hidden sm:inline">Login as </span>Admin
+              </span>
+            </div>
+          </div>
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
@@ -104,36 +103,10 @@ export default function Login() {
                   Signing in...
                 </>
               ) : (
-                'Sign In'
+                `Sign In as ${isAdminMode ? 'Admin' : 'User'}`
               )}
             </Button>
           </form>
-
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-border" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-card px-2 text-muted-foreground">Or demo login as</span>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <Button
-              variant="outline"
-              onClick={() => handleDemoLogin('admin')}
-              disabled={isLoading}
-            >
-              Admin
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => handleDemoLogin('collaborator')}
-              disabled={isLoading}
-            >
-              Collaborator
-            </Button>
-          </div>
 
           <div className="text-center text-sm">
             <span className="text-muted-foreground">Don't have an account? </span>

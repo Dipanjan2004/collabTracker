@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Plus, FileText, Trash2, Copy, Edit } from 'lucide-react';
 import { TaskTemplate, TaskPriority } from '@/types';
-import { mockTemplatesApi, mockTasksApi } from '@/services/mockApi';
+import { templatesApi, tasksApi } from '@/services/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
@@ -44,7 +44,7 @@ export default function TaskTemplates() {
 
   useEffect(() => {
     const loadTemplates = async () => {
-      const data = await mockTemplatesApi.getAll();
+      const data = await templatesApi.getAll();
       setTemplates(data);
     };
     loadTemplates();
@@ -61,7 +61,7 @@ export default function TaskTemplates() {
     }
 
     try {
-      const newTemplate = await mockTemplatesApi.create({
+      const newTemplate = await templatesApi.create({
         name,
         title,
         description,
@@ -95,7 +95,7 @@ export default function TaskTemplates() {
       const deadline = new Date();
       deadline.setDate(deadline.getDate() + 7); // Default to 7 days from now
       
-      const newTask = await mockTasksApi.create({
+      const newTask = await tasksApi.create({
         title: template.title,
         description: template.description,
         assignedTo: [],
@@ -126,7 +126,7 @@ export default function TaskTemplates() {
     if (!templateToDelete) return;
     
     try {
-      await mockTemplatesApi.delete(templateToDelete);
+      await templatesApi.delete(templateToDelete);
       setTemplates(templates.filter(t => t.id !== templateToDelete));
       setTemplateToDelete(null);
       

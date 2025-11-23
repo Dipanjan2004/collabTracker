@@ -5,7 +5,7 @@ import { TaskCard } from '@/components/TaskCard';
 import { CheckSquare, Users, Clock, AlertCircle } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Task, ProgressLog, AnalyticsData, User as UserType } from '@/types';
-import { mockTasksApi, mockProgressApi, mockAnalyticsApi, mockUsersApi } from '@/services/mockApi';
+import { tasksApi, progressApi, analyticsApi, usersApi } from '@/services/api';
 import {
   LineChart,
   Line,
@@ -69,16 +69,25 @@ export default function Dashboard() {
 
   useEffect(() => {
     const loadData = async () => {
-      const analyticsData = await mockAnalyticsApi.getOverview();
+      const analyticsData = await analyticsApi.getOverview();
       setAnalytics(analyticsData);
 
       if (user?.role === 'admin') {
-        const allTasks = await mockTasksApi.getAll();
+        const allTasks = await tasksApi.getAll();
         // Sort by most recent first
         const sortedTasks = allTasks.sort((a, b) => 
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
-        setTasks(sortedTasks.slice(0, 4));
+        const recentTasks = sortedTasks.slice(0, 4);
+        setTasks(recentTasks);
+        
+        // Load progress logs for recent tasks
+        const logsMap: Record<string, ProgressLog[]> = {};
+        for (const task of recentTasks) {
+          const logs = await progressApi.getByTaskId(task.id);
+          logsMap[task.id] = logs;
+        }
+        setProgressLogs(logsMap);
         
         // Load completed tasks
         const completed = allTasks.filter(t => t.status === 'done');
@@ -92,26 +101,26 @@ export default function Dashboard() {
         setOverdueTasks(overdue);
         
         // Load active contributors
-        const allUsers = await mockUsersApi.getAll();
+        const allUsers = await usersApi.getAll();
         const active = allUsers.filter(u => u.role === 'collaborator' && u.active);
         setActiveContributors(active);
         
         // Load hours data
         const allProgress = await Promise.all(
-          allTasks.map(t => mockProgressApi.getByTaskId(t.id))
+          allTasks.map(t => progressApi.getByTaskId(t.id))
         );
         const flatProgress = allProgress.flat();
         const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
         const recentProgress = flatProgress.filter(p => new Date(p.createdAt) > weekAgo);
         setHoursData(recentProgress);
       } else {
-        const myTasks = await mockTasksApi.getAll({ assignedTo: user?.id });
+        const myTasks = await tasksApi.getAll({ assignedTo: user?.id });
         setTasks(myTasks);
 
         // Load progress for each task
         const logsMap: Record<string, ProgressLog[]> = {};
         for (const task of myTasks) {
-          const logs = await mockProgressApi.getByTaskId(task.id);
+          const logs = await progressApi.getByTaskId(task.id);
           logsMap[task.id] = logs;
         }
         setProgressLogs(logsMap);
@@ -140,10 +149,10 @@ export default function Dashboard() {
       <div className="space-y-6 animate-fade-in">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold mb-2">
+          <h1 className="text-2xl md:text-3xl font-bold mb-2">
             Welcome back, {user?.name}!
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-sm md:text-base text-muted-foreground">
             {user?.role === 'admin'
               ? "Here's an overview of your team's progress"
               : "Here's your task overview"}
@@ -185,9 +194,9 @@ export default function Dashboard() {
         {user?.role === 'admin' && (
           <div className="grid grid-cols-1 gap-6">
             {/* Weekly Hours Chart */}
-            <Card className="glass-card p-6" id="weekly-hours-chart">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold">Weekly Hours</h3>
+            <Card className="glass-card p-3 md:p-6" id="weekly-hours-chart">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-2">
+                <h3 className="text-base md:text-lg font-semibold">Weekly Hours</h3>
                 <Button
                   variant="outline"
                   size="sm"
@@ -197,12 +206,13 @@ export default function Dashboard() {
                       await exportTaskReport(element, `weekly-hours-${Date.now()}`);
                     }
                   }}
+                  className="w-full sm:w-auto"
                 >
                   <Download className="h-4 w-4 mr-2" />
                   Export
                 </Button>
               </div>
-              <ResponsiveContainer width="100%" height={250}>
+              <ResponsiveContainer width="100%" height={200} className="md:h-[250px]">
                 <LineChart data={analytics.weeklyHoursData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                   <XAxis dataKey="date" stroke="hsl(var(--muted-foreground))" />
@@ -226,9 +236,9 @@ export default function Dashboard() {
             </Card>
 
             {/* Top Contributors */}
-            <Card className="glass-card p-6" id="top-contributors-chart">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold">Top Contributors</h3>
+            <Card className="glass-card p-3 md:p-6" id="top-contributors-chart">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-2">
+                <h3 className="text-base md:text-lg font-semibold">Top Contributors</h3>
                 <Button
                   variant="outline"
                   size="sm"
@@ -238,12 +248,13 @@ export default function Dashboard() {
                       await exportTaskReport(element, `top-contributors-${Date.now()}`);
                     }
                   }}
+                  className="w-full sm:w-auto"
                 >
                   <Download className="h-4 w-4 mr-2" />
                   Export
                 </Button>
               </div>
-              <ResponsiveContainer width="100%" height={250}>
+              <ResponsiveContainer width="100%" height={200} className="md:h-[250px]">
                 <BarChart data={analytics.topContributors}>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                   <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" />

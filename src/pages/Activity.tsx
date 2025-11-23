@@ -4,7 +4,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Activity as ActivityIcon, CheckSquare, User, Clock } from 'lucide-react';
 import { ActivityItem } from '@/types';
-import { mockActivityApi } from '@/services/mockApi';
+import { activityApi } from '@/services/api';
 import { format } from 'date-fns';
 
 export default function Activity() {
@@ -12,7 +12,7 @@ export default function Activity() {
 
   useEffect(() => {
     const loadActivities = async () => {
-      const data = await mockActivityApi.getAll();
+      const data = await activityApi.getAll();
       setActivities(data);
     };
     loadActivities();

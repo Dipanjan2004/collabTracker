@@ -1,111 +1,115 @@
 # CollabTrack - Task & Progress Tracker
 
-A modern, futuristic frontend-only demo of CollabTrack - a task and contributor progress tracking system for creative teams.
+A fullstack MERN application for task and contributor progress tracking for creative teams.
 
-## 🚀 Features
+## Features
 
-- **Beautiful Dark UI** - Futuristic design with glassmorphism, gradients, and smooth GSAP animations
-- **Mock API Layer** - Complete localStorage-based mock backend for instant demo
-- **Role-Based Access** - Admin and Collaborator views with different permissions
-- **Task Management** - Create, assign, track tasks with progress timelines
-- **Analytics Dashboard** - Beautiful charts showing team performance and task distribution
-- **Real-time Progress** - Track daily progress logs with percentage completion and hours spent
-- **Responsive Design** - Mobile-first, works beautifully on all devices
+- Modern UI with glassmorphism, gradients, and smooth animations
+- Fullstack Architecture - Express.js backend with MongoDB database
+- Role-Based Access - Admin and Collaborator views with different permissions
+- Task Management - Create, assign, track tasks with progress timelines
+- Analytics Dashboard - Charts showing team performance and task distribution
+- Progress Tracking - Track daily progress logs with percentage completion and hours spent
+- Responsive Design - Mobile-first, works on all devices
+- Real-time Updates - Live notifications and activity feeds
 
-## 🎮 Demo Login Credentials
+## Tech Stack
 
-**Admin Account:**
-- Email: `demo.admin@collabtrack.app`
-- Password: `DemoPass123`
-
-**Collaborator Account:**
-- Email: `aisha@demo.app`
-- Password: `DemoPass123`
-
-## 🛠️ Tech Stack
-
+**Frontend:**
 - React 18 + Vite + TypeScript
 - Tailwind CSS for styling
 - GSAP for animations
 - Recharts for data visualization
 - Shadcn/ui components
 - React Router for navigation
-- localStorage for mock data persistence
 
-## 📦 Installation
+**Backend:**
+- Node.js + Express.js
+- MongoDB with Mongoose
+- JWT authentication
+- RESTful API
+
+## Installation
 
 ```bash
 npm install
 ```
 
-## 🏃 Running the App
+## Running the App
 
+### Development
+
+1. Set up environment variables:
+```bash
+cp .env.example .env
+```
+
+2. Update `.env` with your MongoDB connection string:
+```
+MONGODB_URI=mongodb://localhost:27017/collabtrack
+JWT_SECRET=your-secret-key
+```
+
+3. Start the backend server:
+```bash
+npm run server
+```
+
+4. In a new terminal, start the frontend:
 ```bash
 npm run dev
 ```
 
 Visit `http://localhost:8080`
 
-## 🎬 1-Minute Demo Script (for interviews)
+### Production Build
 
-1. **0-10s**: "This is CollabTrack — a task and progress tracker for creative teams built with React, TypeScript, and Tailwind CSS."
-
-2. **10-25s**: Show Admin dashboard with animated stat cards, charts showing weekly hours, task distribution, and top contributors.
-
-3. **25-40s**: Navigate to Tasks, show task cards with progress bars. Click a task to show detailed view (upcoming feature).
-
-4. **40-55s**: Demonstrate role-based access by logging in as a collaborator. Show different view with only assigned tasks.
-
-5. **55-60s**: "This is a complete frontend with mock APIs. Backend integration is ready with documented API contracts. I can extend with real-time features, file uploads, and advanced analytics."
-
-## 🏗️ Project Structure
-
-```
-src/
-├── components/         # Reusable UI components
-│   ├── layout/        # AppShell, Topbar, Sidebar
-│   ├── ui/            # Shadcn components
-│   └── ...            # StatCard, TaskCard, etc.
-├── contexts/          # AuthContext for user management
-├── pages/             # Route pages (Landing, Login, Dashboard, etc.)
-├── services/          # Mock API layer with localStorage
-├── types/             # TypeScript type definitions
-└── utils/             # Animation helpers, PDF export
-
+```bash
+npm run build
+npm start
 ```
 
-## 🔄 Backend Integration (Future)
+## Deployment on Vercel
 
-This frontend is ready for backend integration. To connect to a real API:
+1. Push your code to GitHub
+2. Import the project in Vercel
+3. Add environment variables in Vercel dashboard:
+   - `MONGODB_URI` - Your MongoDB Atlas connection string
+   - `JWT_SECRET` - A secure random string
+   - `NODE_ENV` - Set to `production`
+4. Deploy!
 
-1. Replace mock API calls in `src/services/mockApi.ts`
-2. Set `VITE_API_BASE_URL` environment variable
-3. Implement JWT token refresh logic
-4. Follow the API contracts in `/api-contracts/` (to be created)
+The `vercel.json` configuration handles both frontend and backend routing automatically.
 
-## 📝 Features Implemented
+## Project Structure
 
-✅ Landing page with hero section
-✅ Authentication (Login/Register with mock JWT)
-✅ Admin dashboard with analytics charts
-✅ Collaborator dashboard with assigned tasks
-✅ Task list with search and filters
-✅ Role-based navigation and permissions
-✅ Notifications drawer (UI ready)
-✅ Responsive design with collapsible sidebar
-✅ GSAP animations throughout
-✅ Glass morphism design system
-✅ Dark theme with neon accents
+```
+├── server/              # Backend Express server
+│   ├── models/         # MongoDB models
+│   ├── routes/         # API routes
+│   └── middleware/     # Auth middleware
+├── src/                # Frontend React app
+│   ├── components/     # Reusable UI components
+│   ├── pages/          # Route pages
+│   ├── services/       # API service layer
+│   ├── contexts/       # React contexts
+│   └── types/          # TypeScript types
+└── vercel.json         # Vercel deployment config
+```
 
-## 🎨 Design System
+## API Endpoints
 
-- **Primary**: Mint-blue gradient (#6EE7B7 → #60A5FA)
-- **Accent**: Coral-yellow gradient (#FB7185 → #FBBF24)
-- **Background**: Near-black with subtle radial gradients
-- **Cards**: Glassmorphism with backdrop blur
-- **Typography**: Inter variable font
-- **Animations**: GSAP with ScrollTrigger
+- `POST /api/auth/login` - User login
+- `POST /api/auth/register` - User registration
+- `GET /api/tasks` - Get all tasks
+- `POST /api/tasks` - Create task
+- `PUT /api/tasks/:id` - Update task
+- `DELETE /api/tasks/:id` - Delete task
+- `GET /api/progress/task/:taskId` - Get progress logs
+- `POST /api/progress` - Create progress log
+- `GET /api/analytics/overview` - Get analytics data
+- And more...
 
-## 📄 License
+## License
 
-Demo project for interview purposes.
+Project for portfolio and interview purposes.

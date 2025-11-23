@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Task } from '@/types';
-import { mockTasksApi } from '@/services/mockApi';
+import { tasksApi } from '@/services/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isSameMonth, addMonths, subMonths } from 'date-fns';
@@ -29,7 +29,7 @@ export default function CalendarView() {
   useEffect(() => {
     const loadTasks = async () => {
       const filters = user?.role === 'collaborator' ? { assignedTo: user.id } : {};
-      const data = await mockTasksApi.getAll(filters);
+      const data = await tasksApi.getAll(filters);
       setTasks(data);
     };
     loadTasks();

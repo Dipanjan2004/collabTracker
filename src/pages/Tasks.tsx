@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Plus, Search, Filter, X, Grid3x3, List, Calendar as CalendarIcon, LayoutGrid, CheckSquare, Square } from 'lucide-react';
 import CalendarView from './CalendarView';
 import { Task, ProgressLog, TaskStatus, TaskPriority } from '@/types';
-import { mockTasksApi, mockProgressApi } from '@/services/mockApi';
+import { tasksApi, progressApi } from '@/services/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
@@ -65,13 +65,13 @@ export default function Tasks() {
     const loadTasks = async () => {
       const filters: any = user?.role === 'collaborator' ? { assignedTo: user.id } : {};
       filters.archived = showArchived;
-      const data = await mockTasksApi.getAll(filters);
+      const data = await tasksApi.getAll(filters);
       setTasks(data);
 
       // Load progress logs for each task
       const logsMap: Record<string, ProgressLog[]> = {};
       for (const task of data) {
-        const logs = await mockProgressApi.getByTaskId(task.id);
+        const logs = await progressApi.getByTaskId(task.id);
         logsMap[task.id] = logs;
       }
       setProgressLogs(logsMap);
@@ -140,7 +140,7 @@ export default function Tasks() {
     try {
       if (bulkDeleteMode && selectedTasks.size > 1) {
         // Bulk delete
-        await Promise.all(Array.from(selectedTasks).map(id => mockTasksApi.delete(id)));
+        await Promise.all(Array.from(selectedTasks).map(id => tasksApi.delete(id)));
         setTasks(prev => prev.filter(t => !selectedTasks.has(t.id)));
         setProgressLogs(prev => {
           const updated = { ...prev };
@@ -155,7 +155,7 @@ export default function Tasks() {
         setBulkDeleteMode(false);
       } else {
         // Single delete
-        await mockTasksApi.delete(taskToDelete);
+        await tasksApi.delete(taskToDelete);
         setTasks(tasks.filter(t => t.id !== taskToDelete));
         setProgressLogs(prev => {
           const updated = { ...prev };
@@ -198,13 +198,13 @@ export default function Tasks() {
   const handleArchive = async (taskId: string) => {
     try {
       if (showArchived) {
-        await mockTasksApi.unarchive(taskId);
+        await tasksApi.unarchive(taskId);
         toast({
           title: 'Task unarchived',
           description: 'Task has been unarchived successfully.',
         });
       } else {
-        await mockTasksApi.archive(taskId);
+        await tasksApi.archive(taskId);
         toast({
           title: 'Task archived',
           description: 'Task has been archived successfully.',
@@ -214,7 +214,7 @@ export default function Tasks() {
       // Reload tasks
       const filters: any = user?.role === 'collaborator' ? { assignedTo: user.id } : {};
       filters.archived = showArchived;
-      const data = await mockTasksApi.getAll(filters);
+      const data = await tasksApi.getAll(filters);
       setTasks(data);
     } catch (error) {
       toast({
@@ -229,7 +229,7 @@ export default function Tasks() {
     if (!user) return;
     
     try {
-      const cloned = await mockTasksApi.clone(taskId, user.id);
+      const cloned = await tasksApi.clone(taskId, user.id);
       toast({
         title: 'Task cloned',
         description: 'Task has been cloned successfully.',
@@ -246,7 +246,7 @@ export default function Tasks() {
   
   const reloadTasks = async () => {
     const filters = user?.role === 'collaborator' ? { assignedTo: user.id } : {};
-    const data = await mockTasksApi.getAll(filters);
+    const data = await tasksApi.getAll(filters);
     setTasks(data);
   };
   
@@ -266,7 +266,7 @@ export default function Tasks() {
     try {
       await Promise.all(
         Array.from(selectedTasks).map(taskId =>
-          mockTasksApi.update(taskId, { status: newStatus })
+          tasksApi.update(taskId, { status: newStatus })
         )
       );
       
@@ -297,15 +297,16 @@ export default function Tasks() {
 
   return (
     <AppShell>
-      <div className="space-y-6 animate-fade-in">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold">Tasks</h1>
-          <div className="flex items-center gap-2">
+      <div className="space-y-4 md:space-y-6 animate-fade-in">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <h1 className="text-2xl md:text-3xl font-bold">Tasks</h1>
+          <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
             <div className="flex items-center gap-1 border border-border rounded-lg p-1">
               <Button
                 variant={viewMode === 'grid' ? 'default' : 'ghost'}
                 size="sm"
                 onClick={() => setViewMode('grid')}
+                className="h-8 px-2"
               >
                 <Grid3x3 className="h-4 w-4" />
               </Button>
@@ -313,6 +314,7 @@ export default function Tasks() {
                 variant={viewMode === 'list' ? 'default' : 'ghost'}
                 size="sm"
                 onClick={() => setViewMode('list')}
+                className="h-8 px-2"
               >
                 <List className="h-4 w-4" />
               </Button>
@@ -320,13 +322,16 @@ export default function Tasks() {
                 variant={viewMode === 'kanban' ? 'default' : 'ghost'}
                 size="sm"
                 onClick={() => setViewMode('kanban')}
+                className="h-8 px-2 text-xs"
               >
-                Kanban
+                <span className="hidden sm:inline">Kanban</span>
+                <LayoutGrid className="h-4 w-4 sm:hidden" />
               </Button>
               <Button
                 variant={viewMode === 'calendar' ? 'default' : 'ghost'}
                 size="sm"
                 onClick={() => setViewMode('calendar')}
+                className="h-8 px-2"
               >
                 <CalendarIcon className="h-4 w-4" />
               </Button>
@@ -338,12 +343,15 @@ export default function Tasks() {
                     variant={showArchived ? 'default' : 'outline'}
                     size="sm"
                     onClick={() => setShowArchived(!showArchived)}
+                    className="text-xs sm:text-sm"
                   >
-                    {showArchived ? 'Show Active' : 'Show Archived'}
+                    <span className="hidden sm:inline">{showArchived ? 'Show Active' : 'Show Archived'}</span>
+                    <span className="sm:hidden">{showArchived ? 'Active' : 'Archive'}</span>
                   </Button>
-                  <Button onClick={() => navigate('/tasks/create')}>
-                    <Plus className="mr-2 h-4 w-4" />
-                    New Task
+                  <Button onClick={() => navigate('/tasks/create')} size="sm" className="text-xs sm:text-sm">
+                    <Plus className="mr-1 sm:mr-2 h-4 w-4" />
+                    <span className="hidden sm:inline">New Task</span>
+                    <span className="sm:hidden">New</span>
                   </Button>
                 </>
               )}
@@ -352,30 +360,30 @@ export default function Tasks() {
         </div>
 
         {/* Search and Filters */}
-        <div className="space-y-4">
-          <div className="flex gap-2">
+        <div className="space-y-3 md:space-y-4">
+          <div className="flex flex-col sm:flex-row gap-2">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search tasks by title, description, or tags..."
+                placeholder="Search tasks..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="pl-10"
+                className="pl-10 text-sm md:text-base"
               />
             </div>
             <Popover open={showFilters} onOpenChange={setShowFilters}>
               <PopoverTrigger asChild>
-                <Button variant="outline" className="relative">
+                <Button variant="outline" className="relative w-full sm:w-auto">
                   <Filter className="h-4 w-4 mr-2" />
                   Filters
                   {activeFiltersCount > 0 && (
-                    <Badge className="ml-2 h-5 w-5 p-0 flex items-center justify-center">
+                    <Badge className="ml-2 h-5 w-5 p-0 flex items-center justify-center text-xs">
                       {activeFiltersCount}
                     </Badge>
                   )}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-80" align="end">
+              <PopoverContent className="w-[calc(100vw-2rem)] sm:w-80" align="end">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <h4 className="font-semibold">Filters</h4>
@@ -478,9 +486,10 @@ export default function Tasks() {
             {/* Sort */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline">
+                <Button variant="outline" className="w-full sm:w-auto">
                   <List className="h-4 w-4 mr-2" />
-                  Sort
+                  <span className="hidden sm:inline">Sort</span>
+                  <span className="sm:hidden">Sort</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
@@ -539,8 +548,8 @@ export default function Tasks() {
           )}
           
           {/* Results Count and Select All */}
-          <div className="flex items-center justify-between">
-            <div className="text-sm text-muted-foreground">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+            <div className="text-xs sm:text-sm text-muted-foreground">
               Showing {filteredTasks.length} of {tasks.length} tasks
             </div>
             {user?.role === 'admin' && filteredTasks.length > 0 && (
@@ -548,16 +557,19 @@ export default function Tasks() {
                 variant="ghost"
                 size="sm"
                 onClick={handleSelectAll}
+                className="text-xs sm:text-sm"
               >
                 {selectedTasks.size === filteredTasks.length ? (
                   <>
-                    <CheckSquare className="h-4 w-4 mr-2" />
-                    Deselect All
+                    <CheckSquare className="h-4 w-4 mr-1 sm:mr-2" />
+                    <span className="hidden sm:inline">Deselect All</span>
+                    <span className="sm:hidden">Deselect</span>
                   </>
                 ) : (
                   <>
-                    <Square className="h-4 w-4 mr-2" />
-                    Select All
+                    <Square className="h-4 w-4 mr-1 sm:mr-2" />
+                    <span className="hidden sm:inline">Select All</span>
+                    <span className="sm:hidden">Select</span>
                   </>
                 )}
               </Button>
