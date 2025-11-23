@@ -1,0 +1,137 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* CollabTrack Design System - Dark Futuristic Theme */
+    /* Base colors */
+    --background: 222 84% 3%;
+    --foreground: 210 40% 98%;
+
+    /* Card with glassmorphism */
+    --card: 222 47% 8%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222 47% 8%;
+    --popover-foreground: 210 40% 98%;
+
+    /* Primary: Mint-blue accent */
+    --primary: 158 64% 52%;
+    --primary-foreground: 222 84% 3%;
+    --primary-glow: 158 64% 62%;
+
+    /* Secondary: Deep navy */
+    --secondary: 222 47% 11%;
+    --secondary-foreground: 210 40% 98%;
+
+    /* Muted states */
+    --muted: 217 32% 17%;
+    --muted-foreground: 215 20% 65%;
+
+    /* Accent: Coral-yellow gradient base */
+    --accent: 346 77% 75%;
+    --accent-foreground: 222 84% 3%;
+    --accent-warm: 38 92% 58%;
+
+    /* Destructive */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    /* Borders and inputs */
+    --border: 217 32% 17%;
+    --input: 217 32% 17%;
+    --ring: 158 64% 52%;
+
+    --radius: 1rem;
+
+    /* Custom gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(222 84% 3%) 0%, hsl(238 60% 15%) 50%, hsl(222 47% 11%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(346 77% 75%) 0%, hsl(38 92% 58%) 100%);
+    --gradient-mint: linear-gradient(135deg, hsl(158 64% 52%) 0%, hsl(211 85% 65%) 100%);
+    
+    /* Glass effect */
+    --glass-bg: rgba(255, 255, 255, 0.03);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    
+    /* Shadows */
+    --shadow-glow: 0 0 40px hsla(158, 64%, 52%, 0.2);
+    --shadow-card: 0 10px 30px -10px hsla(222, 84%, 3%, 0.5);
+    
+    /* Transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Sidebar */
+    --sidebar-background: 222 47% 6%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 158 64% 52%;
+    --sidebar-primary-foreground: 222 84% 3%;
+    --sidebar-accent: 217 32% 17%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217 32% 17%;
+    --sidebar-ring: 158 64% 52%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    background-image: 
+      radial-gradient(circle at 20% 50%, hsla(238, 60%, 15%, 0.15) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, hsla(158, 64%, 52%, 0.08) 0%, transparent 50%);
+  }
+}
+
+@layer components {
+  /* Glass card effect */
+  .glass-card {
+    @apply bg-card/50 backdrop-blur-xl border border-white/10 shadow-lg;
+  }
+  
+  /* Gradient text */
+  .text-gradient-primary {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-400;
+  }
+  
+  .text-gradient-accent {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-accent to-accent-warm;
+  }
+  
+  /* Hover scale animation */
+  .hover-scale {
+    @apply transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98];
+  }
+  
+  /* Glow effect */
+  .glow-primary {
+    box-shadow: 0 0 20px hsla(158, 64%, 52%, 0.3);
+  }
+}
+
+@layer utilities {
+  /* Custom scrollbar */
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-track {
+    @apply bg-muted/30;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-muted rounded-full;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground/50;
+  }
+}
