@@ -5,6 +5,18 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+import authRoutes from '../server/routes/auth.js';
+import usersRoutes from '../server/routes/users.js';
+import tasksRoutes from '../server/routes/tasks.js';
+import progressRoutes from '../server/routes/progress.js';
+import notificationsRoutes from '../server/routes/notifications.js';
+import analyticsRoutes from '../server/routes/analytics.js';
+import activityRoutes from '../server/routes/activity.js';
+import commentsRoutes from '../server/routes/comments.js';
+import templatesRoutes from '../server/routes/templates.js';
+import projectsRoutes from '../server/routes/projects.js';
+import dependenciesRoutes from '../server/routes/dependencies.js';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -24,7 +36,7 @@ app.use(cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-app.get('/api/health', (req, res) => {
+app.get('/health', (req, res) => {
   res.json({ 
     status: 'ok', 
     timestamp: new Date().toISOString(),
@@ -42,7 +54,7 @@ const connectDB = async () => {
   const MONGODB_URI = process.env.MONGODB_URI;
   if (!MONGODB_URI) {
     console.error('MONGODB_URI environment variable is required');
-    return;
+    throw new Error('MONGODB_URI not configured');
   }
 
   try {
@@ -54,23 +66,18 @@ const connectDB = async () => {
     console.log('MongoDB connected');
   } catch (err) {
     console.error('MongoDB connection error:', err.message);
+    throw err;
   }
 };
-import authRoutes from '../server/routes/auth.js';
-import usersRoutes from '../server/routes/users.js';
-import tasksRoutes from '../server/routes/tasks.js';
-import progressRoutes from '../server/routes/progress.js';
-import notificationsRoutes from '../server/routes/notifications.js';
-import analyticsRoutes from '../server/routes/analytics.js';
-import activityRoutes from '../server/routes/activity.js';
-import commentsRoutes from '../server/routes/comments.js';
-import templatesRoutes from '../server/routes/templates.js';
-import projectsRoutes from '../server/routes/projects.js';
-import dependenciesRoutes from '../server/routes/dependencies.js';
 
 app.use(async (req, res, next) => {
-  await connectDB();
-  next();
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    console.error('DB connection error in middleware:', error);
+    res.status(500).json({ error: 'Database connection failed' });
+  }
 });
 
 app.use('/api/auth', authRoutes);
@@ -96,7 +103,14 @@ app.use((err, req, res, next) => {
 });
 
 export default async (req, res) => {
-  await connectDB();
-  app(req, res);
+  try {
+    await connectDB();
+    return app(req, res);
+  } catch (error) {
+    console.error('Handler error:', error);
+    if (!res.headersSent) {
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  }
 };
 
