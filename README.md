@@ -60,6 +60,7 @@ npm run server
 npm run dev
 ```
 
+<<<<<<< HEAD
 Visit `http://localhost:8080`
 
 ### Production Build
