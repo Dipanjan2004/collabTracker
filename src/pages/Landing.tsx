@@ -271,7 +271,7 @@ export default function Landing() {
             gridTemplateColumns: isLg ? '1fr 1fr' : undefined,
             alignItems: 'center',
             gap: isLg ? 64 : 48,
-            minHeight: 'calc(100vh - 5rem)',
+            minHeight: '100vh',
             padding: isLg ? '96px 0' : '64px 0',
           }}
         >
@@ -388,15 +388,15 @@ export default function Landing() {
 
           {/* Right — Operational view visualization matched to factory.ai design */}
           {isLg && (
-            <div
+              <div
               style={{
                 ...reveal(heroReveal.visible, 0.3),
                 position: 'relative',
-                minHeight: 540,
+                minHeight: 680,
                 width: '100%',
               }}
             >
-              <div style={{ position: 'relative', width: '100%', height: '100%', display: 'flex', flexDirection: 'column', gap: 50, paddingTop: 60, paddingLeft: 40 }}>
+              <div style={{ position: 'relative', width: '100%', height: '100%', display: 'flex', flexDirection: 'column', gap: 80, paddingTop: 80, paddingLeft: 0 }}>
                 {/* Horizontal tracks with animated/static nodes */}
                 <div style={{ borderBottom: '1px dashed #222', width: '80%', position: 'relative' }}>
                   <div style={{ position: 'absolute', top: -14, left: '10%', width: 70, height: 28, background: '#111', border: '1px solid #333', borderRadius: 999, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 12px' }}>
@@ -436,7 +436,7 @@ export default function Landing() {
                 </div>
 
                 {/* Overlaid terminal view */}
-                <div style={{ position: 'absolute', bottom: 40, right: 30, background: '#040404', border: '1px solid #1a1a1a', borderRadius: 8, padding: '16px', minWidth: 260, fontFamily: 'monospace', fontSize: 10, color: '#666', boxShadow: '0 10px 40px rgba(0,0,0,0.5)' }}>
+                <div style={{ position: 'absolute', top: 120, right: -80, background: '#0a0a0a', border: '1px solid #1a1a1a', borderRadius: 8, padding: '24px', minWidth: 280, fontFamily: 'monospace', fontSize: 11, color: '#666', boxShadow: '0 10px 40px rgba(0,0,0,0.5)' }}>
                   <div style={{ display: 'flex', gap: 6, marginBottom: 16 }}>
                     <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#333' }}></span>
                     <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#333' }}></span>
@@ -459,7 +459,7 @@ export default function Landing() {
         {/* ── TEAMS SECTION ────────────────────────────────── */}
         <section
           ref={teamsReveal.ref}
-          style={{ borderTop: '1px solid rgba(255,255,255,0.06)', padding: isLg ? '112px 0' : '80px 0' }}
+          style={{ borderTop: '1px solid #1a1a1a', padding: isLg ? '112px 0' : '80px 0', minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
         >
           <div
             style={{
@@ -562,7 +562,7 @@ export default function Landing() {
         {/* ── CAPABILITIES ───────────────────────────────────── */}
         <section
           ref={capsReveal.ref}
-          style={{ borderTop: '1px solid #1a1a1a', padding: isLg ? '112px 0' : '80px 0' }}
+          style={{ borderTop: '1px solid #1a1a1a', padding: isLg ? '112px 0' : '80px 0', minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
         >
           <div style={{ ...reveal(capsReveal.visible), maxWidth: 720 }}>
             {/* Badge */}
@@ -578,7 +578,24 @@ export default function Landing() {
               <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase' as const, color: '#888', fontFamily: 'monospace' }}>Capabilities</span>
             </div>
 
-            <h2 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 3rem)', fontWeight: 500, lineHeight: 1.1, letterSpacing: '-0.03em', margin: 0, color: '#fff' }}>
+            <h2
+              style={{
+                fontSize: 'clamp(2.6rem, 5.5vw, 4.8rem)',
+                fontWeight: 100,
+                lineHeight: 1.1,
+                letterSpacing: '-0.04em',
+                margin: 0,
+                color: '#fff',
+                fontFamily: '"Merriweather", serif',
+                fontStretch: 'extra-condensed',
+                WebkitFontSmoothing: 'antialiased',
+                MozOsxFontSmoothing: 'grayscale',
+                WebkitTextStroke: '1.2px #000',
+                opacity: 0.9,
+                fontOpticalSizing: 'auto',
+                fontVariationSettings: '"wdth" 25'
+              }}
+            >
               A professional task and progress tracker{' '}
               <span style={{ color: '#666' }}>for modern creative delivery.</span>
             </h2>
@@ -634,7 +651,7 @@ export default function Landing() {
         {/* ── CTA SECTION ────────────────────────────────────── */}
         <section
           ref={ctaReveal.ref}
-          style={{ borderTop: '1px solid #1a1a1a', padding: isLg ? '112px 0' : '80px 0' }}
+          style={{ borderTop: '1px solid #1a1a1a', padding: isLg ? '112px 0' : '80px 0', minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
         >
           <div
             style={{
@@ -668,7 +685,24 @@ export default function Landing() {
                   <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase' as const, color: '#888', fontFamily: 'monospace' }}>Start using it</span>
                 </div>
 
-                <h2 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 3rem)', fontWeight: 500, lineHeight: 1.1, letterSpacing: '-0.03em', margin: 0, color: '#fff' }}>
+                <h2
+                  style={{
+                    fontSize: 'clamp(2.6rem, 5.5vw, 4.8rem)',
+                    fontWeight: 100,
+                    lineHeight: 1.1,
+                    letterSpacing: '-0.04em',
+                    margin: 0,
+                    color: '#fff',
+                    fontFamily: '"Merriweather", serif',
+                    fontStretch: 'extra-condensed',
+                    WebkitFontSmoothing: 'antialiased',
+                    MozOsxFontSmoothing: 'grayscale',
+                    WebkitTextStroke: '1.2px #000',
+                    opacity: 0.9,
+                    fontOpticalSizing: 'auto',
+                    fontVariationSettings: '"wdth" 25'
+                  }}
+                >
                   Explore the full workflow{' '}
                   <span style={{ color: '#666' }}>from task creation to reporting.</span>
                 </h2>
