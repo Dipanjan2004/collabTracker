@@ -62,14 +62,26 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-3 md:p-4">
-      <div className="w-full max-w-md space-y-4 md:space-y-6">
-        <div className="text-center">
-          <h1 className="text-2xl md:text-3xl font-bold text-gradient-primary mb-2">CollabTrack</h1>
-          <p className="text-sm md:text-base text-muted-foreground">Create your account</p>
+    <div className="min-h-screen bg-background px-3 py-10 md:px-4">
+      <div className="mx-auto grid min-h-[calc(100vh-5rem)] w-full max-w-6xl items-center gap-8 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="hidden rounded-[2rem] bg-[linear-gradient(135deg,hsl(214_72%_30%)_0%,hsl(215_67%_37%)_55%,hsl(203_72%_46%)_100%)] p-10 text-white shadow-[0_24px_60px_-32px_rgba(15,23,42,0.45)] lg:block">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/70">CollabTrack</p>
+          <h1 className="mt-6 max-w-md text-5xl font-extrabold tracking-tight">
+            Set up a workspace that looks organized from day one.
+          </h1>
+          <p className="mt-6 max-w-lg text-base leading-7 text-white/78">
+            Create your account to start coordinating delivery, collecting progress updates, and reporting with less friction.
+          </p>
         </div>
 
-        <Card className="glass-card p-4 md:p-6 space-y-4 md:space-y-6">
+        <div className="w-full max-w-md justify-self-center space-y-4 md:space-y-6">
+        <div className="text-center">
+          <p className="eyebrow">Create Account</p>
+          <h1 className="mb-2 mt-2 text-3xl font-extrabold tracking-tight text-foreground">Join CollabTrack</h1>
+          <p className="text-sm md:text-base text-muted-foreground">Create your account and start managing work with a cleaner operating rhythm.</p>
+        </div>
+
+        <Card className="glass-card space-y-4 p-5 md:space-y-6 md:p-7">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="name">Full Name</Label>
@@ -153,6 +165,7 @@ export default function Register() {
           >
             ← Back to home
           </button>
+        </div>
         </div>
       </div>
     </div>

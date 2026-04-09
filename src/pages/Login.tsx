@@ -42,16 +42,38 @@ export default function Login() {
 
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-3 md:p-4">
-      <div className="w-full max-w-md space-y-4 md:space-y-6">
-        <div className="text-center">
-          <h1 className="text-2xl md:text-3xl font-bold text-gradient-primary mb-2">CollabTrack</h1>
-          <p className="text-sm md:text-base text-muted-foreground">Sign in to your account</p>
+    <div className="min-h-screen bg-background px-3 py-10 md:px-4">
+      <div className="mx-auto grid min-h-[calc(100vh-5rem)] w-full max-w-6xl items-center gap-8 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="hidden rounded-[2rem] bg-[linear-gradient(135deg,hsl(214_72%_30%)_0%,hsl(215_67%_37%)_55%,hsl(203_72%_46%)_100%)] p-10 text-white shadow-[0_24px_60px_-32px_rgba(15,23,42,0.45)] lg:block">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/70">CollabTrack</p>
+          <h1 className="mt-6 max-w-md text-5xl font-extrabold tracking-tight">
+            Run creative delivery with more control.
+          </h1>
+          <p className="mt-6 max-w-lg text-base leading-7 text-white/78">
+            Centralize tasks, approvals, progress logs, and reporting in a workspace designed for real team operations.
+          </p>
+          <div className="mt-10 grid gap-4">
+            <div className="rounded-2xl border border-white/15 bg-white/10 p-5">
+              <p className="text-sm font-semibold">Operational visibility</p>
+              <p className="mt-2 text-sm text-white/75">Track deadlines, blockers, and contributor activity without context switching.</p>
+            </div>
+            <div className="rounded-2xl border border-white/15 bg-white/10 p-5">
+              <p className="text-sm font-semibold">Structured review flow</p>
+              <p className="mt-2 text-sm text-white/75">Approve work updates, manage feedback, and keep stakeholders aligned.</p>
+            </div>
+          </div>
         </div>
 
-        <Card className="glass-card p-4 md:p-6 space-y-4 md:space-y-6">
-          {/* Role Toggle */}
-          <div className="flex items-center justify-center gap-2 md:gap-4 p-3 md:p-4 bg-muted/50 rounded-lg">
+        <div className="w-full max-w-md justify-self-center space-y-4 md:space-y-6">
+        <div className="text-center">
+          <p className="eyebrow">Welcome Back</p>
+          <h1 className="mb-2 mt-2 text-3xl font-extrabold tracking-tight text-foreground">Sign in to CollabTrack</h1>
+          <p className="text-sm md:text-base text-muted-foreground">Access your workspace, tasks, and team activity.</p>
+        </div>
+
+        <Card className="glass-card space-y-4 p-5 md:space-y-6 md:p-7">
+          <div className="rounded-2xl border border-border/70 bg-secondary/70 p-3 md:p-4">
+            <div className="flex items-center justify-center gap-2 md:gap-4">
             <div className="flex items-center gap-1 md:gap-2">
               <Users className={`h-4 w-4 md:h-5 md:w-5 ${!isAdminMode ? 'text-primary' : 'text-muted-foreground'}`} />
               <span className={`text-sm md:text-base font-medium ${!isAdminMode ? 'text-foreground' : 'text-muted-foreground'}`}>
@@ -68,6 +90,7 @@ export default function Login() {
               <span className={`text-sm md:text-base font-medium ${isAdminMode ? 'text-foreground' : 'text-muted-foreground'}`}>
                 <span className="hidden sm:inline">Login as </span>Admin
               </span>
+            </div>
             </div>
           </div>
 
@@ -128,6 +151,7 @@ export default function Login() {
           >
             ← Back to home
           </button>
+        </div>
         </div>
       </div>
     </div>

@@ -33,17 +33,17 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { format } from 'date-fns';
 
 const statusColors = {
-  todo: 'bg-gray-500/10 text-gray-500',
-  'in-progress': 'bg-blue-500/10 text-blue-500',
-  blocked: 'bg-red-500/10 text-red-500',
-  review: 'bg-yellow-500/10 text-yellow-500',
-  done: 'bg-green-500/10 text-green-500',
+  todo: 'border-slate-200 bg-slate-100 text-slate-700',
+  'in-progress': 'border-blue-200 bg-blue-50 text-blue-700',
+  blocked: 'border-rose-200 bg-rose-50 text-rose-700',
+  review: 'border-amber-200 bg-amber-50 text-amber-700',
+  done: 'border-emerald-200 bg-emerald-50 text-emerald-700',
 };
 
 const priorityColors = {
-  low: 'bg-green-500/10 text-green-500 border-green-500/20',
-  medium: 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20',
-  high: 'bg-red-500/10 text-red-500 border-red-500/20',
+  low: 'border-emerald-200 bg-emerald-50 text-emerald-700',
+  medium: 'border-amber-200 bg-amber-50 text-amber-700',
+  high: 'border-rose-200 bg-rose-50 text-rose-700',
 };
 
 export default function Dashboard() {
@@ -146,20 +146,25 @@ export default function Dashboard() {
 
   return (
     <AppShell>
-      <div className="space-y-6 animate-fade-in">
-        {/* Header */}
-        <div>
-          <h1 className="text-2xl md:text-3xl font-bold mb-2">
+      <div className="page-shell space-y-6 animate-fade-in">
+        <div className="section-header">
+          <div>
+            <p className="eyebrow">Overview</p>
+            <h1 className="mt-2 text-3xl font-extrabold tracking-tight md:text-4xl">
             Welcome back, {user?.name}!
-          </h1>
-          <p className="text-sm md:text-base text-muted-foreground">
+            </h1>
+            <p className="mt-2 max-w-2xl text-sm md:text-base text-muted-foreground">
             {user?.role === 'admin'
               ? "Here's an overview of your team's progress"
               : "Here's your task overview"}
-          </p>
+            </p>
+          </div>
+          <div className="surface-subtle px-4 py-3">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary/70">Workspace health</p>
+            <p className="mt-1 text-sm text-muted-foreground">Tasks, contributors, and time signals in one place.</p>
+          </div>
         </div>
 
-        {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard
             title="Tasks Completed"
@@ -190,13 +195,14 @@ export default function Dashboard() {
           />
         </div>
 
-        {/* Charts */}
         {user?.role === 'admin' && (
           <div className="grid grid-cols-1 gap-6">
-            {/* Weekly Hours Chart */}
-            <Card className="glass-card p-3 md:p-6" id="weekly-hours-chart">
+            <Card className="glass-card p-4 md:p-6" id="weekly-hours-chart">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-2">
-                <h3 className="text-base md:text-lg font-semibold">Weekly Hours</h3>
+                <div>
+                  <p className="eyebrow">Performance</p>
+                  <h3 className="mt-1 text-base font-semibold md:text-lg">Weekly Hours</h3>
+                </div>
                 <Button
                   variant="outline"
                   size="sm"
@@ -235,10 +241,12 @@ export default function Dashboard() {
               </ResponsiveContainer>
             </Card>
 
-            {/* Top Contributors */}
-            <Card className="glass-card p-3 md:p-6" id="top-contributors-chart">
+            <Card className="glass-card p-4 md:p-6" id="top-contributors-chart">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-2">
-                <h3 className="text-base md:text-lg font-semibold">Top Contributors</h3>
+                <div>
+                  <p className="eyebrow">Team</p>
+                  <h3 className="mt-1 text-base font-semibold md:text-lg">Top Contributors</h3>
+                </div>
                 <Button
                   variant="outline"
                   size="sm"
@@ -273,11 +281,13 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Recent/My Tasks */}
         <div>
-          <h2 className="text-2xl font-semibold mb-4">
+          <div className="mb-4">
+            <p className="eyebrow">Execution</p>
+            <h2 className="mt-1 text-2xl font-semibold tracking-tight">
             {user?.role === 'admin' ? 'Recent Tasks' : 'My Tasks'}
-          </h2>
+            </h2>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {tasks.map((task) => (
               <TaskCard
@@ -289,10 +299,8 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Dialogs for Stat Cards */}
         {user?.role === 'admin' && (
           <>
-            {/* Completed Tasks Dialog */}
             <Dialog open={dialogOpen.completed} onOpenChange={(open) => setDialogOpen({ ...dialogOpen, completed: open })}>
               <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
                 <DialogHeader>
@@ -326,7 +334,6 @@ export default function Dashboard() {
               </DialogContent>
             </Dialog>
 
-            {/* Active Contributors Dialog */}
             <Dialog open={dialogOpen.contributors} onOpenChange={(open) => setDialogOpen({ ...dialogOpen, contributors: open })}>
               <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
                 <DialogHeader>
@@ -360,7 +367,6 @@ export default function Dashboard() {
               </DialogContent>
             </Dialog>
 
-            {/* Hours This Week Dialog */}
             <Dialog open={dialogOpen.hours} onOpenChange={(open) => setDialogOpen({ ...dialogOpen, hours: open })}>
               <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
                 <DialogHeader>
@@ -397,7 +403,6 @@ export default function Dashboard() {
               </DialogContent>
             </Dialog>
 
-            {/* Overdue Tasks Dialog */}
             <Dialog open={dialogOpen.overdue} onOpenChange={(open) => setDialogOpen({ ...dialogOpen, overdue: open })}>
               <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
                 <DialogHeader>

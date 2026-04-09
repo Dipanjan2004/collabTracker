@@ -108,7 +108,7 @@ export default {
         "counter": "counter 0.5s ease-out",
       },
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
+        sans: ["Manrope", "ui-sans-serif", "system-ui", "sans-serif"],
       },
     },
   },

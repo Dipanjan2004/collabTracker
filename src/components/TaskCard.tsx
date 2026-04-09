@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Calendar, Clock, Users, Trash2, CheckSquare, Square, Archive, Copy } from 'lucide-react';
+import { Calendar, Clock, Users, Trash2, CheckSquare, Square } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -28,17 +28,17 @@ interface TaskCardProps {
 }
 
 const priorityColors = {
-  low: 'bg-green-500/10 text-green-500 border-green-500/20',
-  medium: 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20',
-  high: 'bg-red-500/10 text-red-500 border-red-500/20',
+  low: 'border-emerald-200 bg-emerald-50 text-emerald-700',
+  medium: 'border-amber-200 bg-amber-50 text-amber-700',
+  high: 'border-rose-200 bg-rose-50 text-rose-700',
 };
 
 const statusColors = {
-  todo: 'bg-gray-500/10 text-gray-500',
-  'in-progress': 'bg-blue-500/10 text-blue-500',
-  blocked: 'bg-red-500/10 text-red-500',
-  review: 'bg-yellow-500/10 text-yellow-500',
-  done: 'bg-green-500/10 text-green-500',
+  todo: 'border-slate-200 bg-slate-100 text-slate-700',
+  'in-progress': 'border-blue-200 bg-blue-50 text-blue-700',
+  blocked: 'border-rose-200 bg-rose-50 text-rose-700',
+  review: 'border-amber-200 bg-amber-50 text-amber-700',
+  done: 'border-emerald-200 bg-emerald-50 text-emerald-700',
 };
 
 export function TaskCard({ task, progressLogs = [], onDelete, onStatusChange, onArchive, onClone, showDelete = false, compact = false, isSelected = false, onSelect, showCheckbox = false, isArchived = false }: TaskCardProps) {
@@ -81,21 +81,21 @@ export function TaskCard({ task, progressLogs = [], onDelete, onStatusChange, on
   return (
     <Card
       className={cn(
-        "glass-card hover-scale transition-all group relative",
+        "glass-card hover-scale group relative overflow-hidden transition-all",
         compact ? "p-3" : "p-4",
-        isOverdue && "border-red-500/50",
+        isOverdue && "border-rose-300",
         !showDelete && "cursor-pointer"
       )}
       onClick={() => !showDelete && navigate(`/tasks/${task.id}`)}
     >
+      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary/70 via-primary to-accent-warm/70" />
       <div className={cn("space-y-3", showDelete && "pr-10")}>
-        {/* Header */}
         <div className="flex items-start justify-between gap-2">
           {showCheckbox && onSelect && (
             <Button
               variant="ghost"
               size="icon"
-              className="h-5 w-5 mt-0.5"
+              className="mt-0.5 h-5 w-5"
               onClick={(e) => {
                 e.stopPropagation();
                 onSelect(task.id);
@@ -108,7 +108,7 @@ export function TaskCard({ task, progressLogs = [], onDelete, onStatusChange, on
               )}
             </Button>
           )}
-          <h3 className={cn("font-semibold line-clamp-2 flex-1", showDelete && "cursor-pointer", showCheckbox && "cursor-pointer")} onClick={() => navigate(`/tasks/${task.id}`)}>
+          <h3 className={cn("flex-1 line-clamp-2 text-base font-semibold tracking-tight", showDelete && "cursor-pointer", showCheckbox && "cursor-pointer")} onClick={() => navigate(`/tasks/${task.id}`)}>
             {task.title}
           </h3>
           <div className="flex items-center gap-2 flex-shrink-0">
@@ -129,30 +129,27 @@ export function TaskCard({ task, progressLogs = [], onDelete, onStatusChange, on
           </div>
         </div>
 
-        {/* Tags */}
         <div className="flex flex-wrap gap-1">
           {task.tags.map((tag) => (
-            <Badge key={tag} variant="secondary" className="text-xs">
+            <Badge key={tag} variant="secondary" className="border-0 bg-secondary text-[10px] text-secondary-foreground normal-case tracking-normal">
               {tag}
             </Badge>
           ))}
         </div>
 
-        {/* Progress */}
         <div className="space-y-1">
           <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <span>Progress</span>
-            <span>{latestProgress}%</span>
+            <span className="font-medium">Progress</span>
+            <span className="font-semibold text-foreground">{latestProgress}%</span>
           </div>
           <Progress value={latestProgress} className="h-2" />
         </div>
 
-        {/* Footer */}
         <div className="flex items-center justify-between text-xs text-muted-foreground">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-1">
               <Calendar className="h-3 w-3" />
-              <span className={isOverdue ? 'text-red-500 font-medium' : ''}>
+              <span className={isOverdue ? 'font-medium text-rose-600' : ''}>
                 {isOverdue ? 'Overdue' : formatDistanceToNow(new Date(task.deadline), { addSuffix: true })}
               </span>
             </div>
@@ -162,7 +159,6 @@ export function TaskCard({ task, progressLogs = [], onDelete, onStatusChange, on
             </div>
           </div>
 
-          {/* Assigned users */}
           <div className="flex items-center gap-1">
             <Users className="h-3 w-3" />
             <span className="text-xs">
@@ -173,7 +169,6 @@ export function TaskCard({ task, progressLogs = [], onDelete, onStatusChange, on
           </div>
         </div>
 
-        {/* Status */}
         <div className="flex items-center justify-between gap-2">
           <Badge className={statusColors[task.status]} variant="secondary">
             {task.status.replace('-', ' ')}

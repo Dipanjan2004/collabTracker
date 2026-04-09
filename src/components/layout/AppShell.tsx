@@ -12,9 +12,9 @@ export function AppShell({ children }: AppShellProps) {
   return (
     <div className="min-h-screen w-full bg-background">
       <Topbar onMenuClick={() => setMobileMenuOpen(true)} />
-      <div className="flex w-full">
+      <div className="mx-auto flex w-full max-w-[1600px]">
         <Sidebar mobileOpen={mobileMenuOpen} onMobileClose={() => setMobileMenuOpen(false)} />
-        <main className="flex-1 p-3 md:p-4 lg:p-6 overflow-x-hidden w-full min-w-0">
+        <main className="min-w-0 flex-1 overflow-x-hidden">
           {children}
         </main>
       </div>

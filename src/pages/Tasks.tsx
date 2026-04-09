@@ -297,11 +297,17 @@ export default function Tasks() {
 
   return (
     <AppShell>
-      <div className="space-y-4 md:space-y-6 animate-fade-in">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <h1 className="text-2xl md:text-3xl font-bold">Tasks</h1>
+      <div className="page-shell space-y-4 md:space-y-6 animate-fade-in">
+        <div className="section-header gap-4">
+          <div>
+            <p className="eyebrow">Task Workspace</p>
+            <h1 className="mt-2 text-3xl font-extrabold tracking-tight md:text-4xl">Tasks</h1>
+            <p className="mt-2 text-sm text-muted-foreground md:text-base">
+              Search, filter, and move work across views without leaving the workspace.
+            </p>
+          </div>
           <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
-            <div className="flex items-center gap-1 border border-border rounded-lg p-1">
+            <div className="surface-subtle flex items-center gap-1 p-1">
               <Button
                 variant={viewMode === 'grid' ? 'default' : 'ghost'}
                 size="sm"
@@ -359,8 +365,7 @@ export default function Tasks() {
           </div>
         </div>
 
-        {/* Search and Filters */}
-        <div className="space-y-3 md:space-y-4">
+        <div className="surface-panel space-y-3 p-4 md:space-y-4 md:p-5">
           <div className="flex flex-col sm:flex-row gap-2">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -514,7 +519,6 @@ export default function Tasks() {
             </DropdownMenu>
           </div>
           
-          {/* Active Filters Display */}
           {activeFiltersCount > 0 && (
             <div className="flex flex-wrap gap-2">
               {statusFilter.map(status => (
@@ -547,7 +551,6 @@ export default function Tasks() {
             </div>
           )}
           
-          {/* Results Count and Select All */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
             <div className="text-xs sm:text-sm text-muted-foreground">
               Showing {filteredTasks.length} of {tasks.length} tasks
@@ -577,7 +580,6 @@ export default function Tasks() {
           </div>
         </div>
 
-        {/* Task List */}
         {viewMode === 'grid' && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredTasks.length === 0 ? (
@@ -636,7 +638,6 @@ export default function Tasks() {
         {viewMode === 'kanban' && <KanbanView />}
         {viewMode === 'calendar' && <CalendarView />}
 
-        {/* Delete Task Confirmation Dialog */}
         <AlertDialog open={!!taskToDelete} onOpenChange={(open) => !open && setTaskToDelete(null)}>
           <AlertDialogContent>
             <AlertDialogHeader>

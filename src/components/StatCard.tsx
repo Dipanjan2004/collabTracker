@@ -23,26 +23,26 @@ export function StatCard({ title, value, icon: Icon, trend, suffix = '', onClick
 
   return (
     <Card 
-      className={onClick ? "glass-card p-6 hover-scale cursor-pointer transition-all hover:border-primary/50" : "glass-card p-6 hover-scale"}
+      className={onClick ? "glass-card hover-scale cursor-pointer p-6 transition-all hover:border-primary/40" : "glass-card hover-scale p-6"}
       onClick={onClick}
     >
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-sm text-muted-foreground mb-1">{title}</p>
+          <p className="mb-2 text-sm font-medium text-muted-foreground">{title}</p>
           <div className="flex items-baseline gap-2">
-            <p ref={counterRef} className="text-3xl font-bold">
+            <p ref={counterRef} className="text-3xl font-extrabold tracking-tight text-foreground">
               0
             </p>
             {suffix && <span className="text-lg text-muted-foreground">{suffix}</span>}
           </div>
           {trend && (
-            <p className="text-xs text-primary mt-2">{trend}</p>
+            <p className="mt-3 inline-flex rounded-full bg-accent px-2.5 py-1 text-xs font-semibold text-accent-foreground">{trend}</p>
           )}
           {onClick && value > 0 && (
-            <p className="text-xs text-muted-foreground mt-2">Click to view details</p>
+            <p className="mt-3 text-xs text-muted-foreground">Click to view details</p>
           )}
         </div>
-        <div className="p-3 rounded-lg bg-primary/10">
+        <div className="rounded-2xl bg-accent p-3">
           <Icon className="h-6 w-6 text-primary" />
         </div>
       </div>
