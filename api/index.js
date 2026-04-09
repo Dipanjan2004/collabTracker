@@ -2,30 +2,25 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import path from 'path';
-import { fileURLToPath } from 'url';
 
-import authRoutes from '../server/routes/auth.js';
-import usersRoutes from '../server/routes/users.js';
-import tasksRoutes from '../server/routes/tasks.js';
-import progressRoutes from '../server/routes/progress.js';
-import notificationsRoutes from '../server/routes/notifications.js';
-import analyticsRoutes from '../server/routes/analytics.js';
-import activityRoutes from '../server/routes/activity.js';
-import commentsRoutes from '../server/routes/comments.js';
-import templatesRoutes from '../server/routes/templates.js';
-import projectsRoutes from '../server/routes/projects.js';
-import dependenciesRoutes from '../server/routes/dependencies.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import authRoutes from '../backend/src/routes/auth.js';
+import usersRoutes from '../backend/src/routes/users.js';
+import tasksRoutes from '../backend/src/routes/tasks.js';
+import progressRoutes from '../backend/src/routes/progress.js';
+import notificationsRoutes from '../backend/src/routes/notifications.js';
+import analyticsRoutes from '../backend/src/routes/analytics.js';
+import activityRoutes from '../backend/src/routes/activity.js';
+import commentsRoutes from '../backend/src/routes/comments.js';
+import templatesRoutes from '../backend/src/routes/templates.js';
+import projectsRoutes from '../backend/src/routes/projects.js';
+import dependenciesRoutes from '../backend/src/routes/dependencies.js';
 
 dotenv.config();
 
 const app = express();
 
 const corsOptions = {
-  origin: process.env.NODE_ENV === 'production' 
+  origin: process.env.NODE_ENV === 'production'
     ? process.env.FRONTEND_URL?.split(',') || true
     : true,
   credentials: true,
@@ -37,20 +32,18 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'ok', 
+  res.json({
+    status: 'ok',
     timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development'
+    environment: process.env.NODE_ENV || 'development',
   });
 });
 
 let mongooseConnected = false;
 
 const connectDB = async () => {
-  if (mongooseConnected) {
-    return;
-  }
-  
+  if (mongooseConnected) return;
+
   const MONGODB_URI = process.env.MONGODB_URI;
   if (!MONGODB_URI) {
     console.error('MONGODB_URI environment variable is required');
@@ -96,8 +89,8 @@ app.use((err, req, res, next) => {
   console.error('Error:', err);
   const status = err.status || err.statusCode || 500;
   res.status(status).json({
-    error: process.env.NODE_ENV === 'production' 
-      ? 'Internal server error' 
+    error: process.env.NODE_ENV === 'production'
+      ? 'Internal server error'
       : err.message || 'An error occurred',
   });
 });
@@ -113,4 +106,3 @@ export default async (req, res) => {
     }
   }
 };
-

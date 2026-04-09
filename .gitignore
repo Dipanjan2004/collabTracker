@@ -6,17 +6,19 @@ node_modules/
 # Testing
 /coverage
 
-# Production
+# Production builds
+frontend/dist/
 /dist
 /build
 
-# Misc
-.DS_Store
+# Environment files
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+frontend/.env
+backend/.env
 
 # Logs
 npm-debug.log*
@@ -33,3 +35,10 @@ lerna-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Lock files (keep package-lock.json, ignore others)
+bun.lockb
