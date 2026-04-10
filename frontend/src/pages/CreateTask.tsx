@@ -35,8 +35,13 @@ export default function CreateTask() {
 
   useEffect(() => {
     const loadUsers = async () => {
-      const allUsers = await usersApi.getAll();
-      setUsers(allUsers.filter(u => u.role === 'collaborator'));
+      try {
+        const allUsers = await usersApi.getAll();
+        console.log('Fetched users:', allUsers);
+        setUsers(allUsers.filter(u => u.role === 'collaborator'));
+      } catch (error) {
+        console.error('Failed to load users:', error);
+      }
     };
     loadUsers();
   }, []);

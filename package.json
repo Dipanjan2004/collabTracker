@@ -1,22 +1,17 @@
 {
   "name": "collabtrack",
   "private": true,
-  "version": "1.0.0",
-  "workspaces": [
-    "frontend",
-    "backend"
-  ],
+  "version": "2.0.0",
   "scripts": {
-    "dev": "npm run dev:backend & npm run dev:frontend",
+    "dev": "npm run dev:frontend & npm run dev:backend",
     "dev:frontend": "npm run dev --workspace=frontend",
-    "dev:backend": "npm run dev --workspace=backend",
+    "dev:backend": "cd backend && uvicorn app.main:app --reload --port 5000",
     "build": "npm run build --workspace=frontend",
-    "start": "npm run start --workspace=backend",
-    "lint": "npm run lint --workspace=frontend",
-    "seed": "npm run seed --workspace=backend",
-    "create-admin": "node scripts/create-admin.cjs",
-    "create-collaborator": "node scripts/create-collaborator.cjs",
-    "make-admin": "node scripts/make-admin.cjs",
-    "install:all": "npm install"
+    "start": "cd backend && uvicorn app.main:app --port 5000",
+    "seed": "cd backend && python scripts/seed.py",
+    "create-admin": "cd backend && python scripts/create_admin.py",
+    "create-collaborator": "cd backend && python scripts/create_collaborator.py",
+    "make-admin": "cd backend && python scripts/make_admin.py",
+    "install:all": "npm install && cd backend && pip install -r requirements.txt"
   }
 }

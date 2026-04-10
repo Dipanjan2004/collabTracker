@@ -3,6 +3,17 @@ node_modules/
 /.pnp
 .pnp.js
 
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+*.egg
+dist/
+build/
+.venv/
+venv/
+
 # Testing
 /coverage
 
