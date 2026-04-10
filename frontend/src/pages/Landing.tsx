@@ -95,6 +95,28 @@ function useReveal() {
   return { ref, visible };
 }
 
+function useTypewriter(text: string, speed = 80, pause = 1800) {
+  const [displayed, setDisplayed] = useState('');
+  const [showCursor, setShowCursor] = useState(true);
+  useEffect(() => {
+    let i = 0;
+    let timeoutId: ReturnType<typeof setTimeout>;
+    function type() {
+      if (i <= text.length) {
+        setDisplayed(text.slice(0, i));
+        i++;
+        timeoutId = setTimeout(type, speed);
+      } else {
+        timeoutId = setTimeout(() => { i = 0; type(); }, pause);
+      }
+    }
+    type();
+    const cursorInterval = setInterval(() => setShowCursor(c => !c), 530);
+    return () => { clearTimeout(timeoutId); clearInterval(cursorInterval); };
+  }, [text, speed, pause]);
+  return { displayed, showCursor };
+}
+
 const reveal = (v: boolean, delay = 0): React.CSSProperties => ({
   opacity: v ? 1 : 0,
   transform: v ? 'translateY(0)' : 'translateY(28px)',
@@ -119,6 +141,38 @@ const css = {
     paddingRight: 20,
   },
 } as const;
+
+/* ------------------------------------------------------------------ */
+/*  CLI Typewriter sub-component                                       */
+/* ------------------------------------------------------------------ */
+function CliTyper() {
+  const CMD = 'npx create-collabtrack-app';
+  const { displayed, showCursor } = useTypewriter(CMD, 75, 2000);
+  const [copied, setCopied] = useState(false);
+
+  function handleCopy() {
+    navigator.clipboard.writeText(CMD).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    });
+  }
+
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#0a0a0a', border: '1px solid #333', borderRadius: 6, padding: '14px 16px' }}>
+      <span style={{ color: '#fff', fontFamily: 'monospace', fontSize: 14, whiteSpace: 'nowrap' }}>
+        <span style={{ color: '#ff4500', marginRight: 8, fontWeight: 'bold' }}>&gt;</span>
+        {displayed}
+        <span style={{ opacity: showCursor ? 1 : 0, color: '#ff4500', fontWeight: 100, marginLeft: 1 }}>|</span>
+      </span>
+      <button onClick={handleCopy} title="Copy" style={{ background: 'none', border: 'none', color: copied ? '#ff4500' : '#666', cursor: 'pointer', padding: 0, marginLeft: 12, transition: 'color 0.2s', flexShrink: 0 }}>
+        {copied
+          ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        }
+      </button>
+    </div>
+  );
+}
 
 /* ------------------------------------------------------------------ */
 /*  Component                                                          */
@@ -276,7 +330,7 @@ export default function Landing() {
           }}
         >
           {/* Left — Copy */}
-          <div style={{ ...reveal(heroReveal.visible), marginLeft: -80 }}>
+          <div style={{ ...reveal(heroReveal.visible), marginLeft: -80, marginTop: -120 }}>
             {/* Badge */}
             <div
               style={{
@@ -366,12 +420,7 @@ export default function Landing() {
                   <span style={{ height: 1, flex: 1, background: '#222' }}></span>
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#0a0a0a', border: '1px solid #333', borderRadius: 6, padding: '14px 16px' }}>
-                  <span style={{ color: '#fff', fontFamily: 'monospace', fontSize: 14 }}><span style={{ color: '#ff4500', marginRight: 8, fontWeight: 'bold' }}>&gt;</span>npx create-collabtrack-app</span>
-                  <button style={{ background: 'none', border: 'none', color: '#666', cursor: 'pointer', padding: 0 }}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                  </button>
-                </div>
+                <CliTyper />
               </div>
             </div>
 
