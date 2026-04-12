@@ -114,6 +114,10 @@ async def create_task(body: TaskCreate, current_user: dict = Depends(get_current
         "estimate": body.estimate,
         "start_date": body.startDate,
     }
+    # Exclude organization_id entirely — the column has a FK constraint
+    # to an organizations table. Run this SQL in Supabase to fix:
+    #   ALTER TABLE tasks DROP CONSTRAINT tasks_organization_id_fkey;
+    #   ALTER TABLE tasks ALTER COLUMN organization_id DROP NOT NULL;
 
     if body.teamId:
         num_result = supabase.rpc(
