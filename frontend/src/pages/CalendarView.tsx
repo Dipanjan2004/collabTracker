@@ -28,7 +28,7 @@ export default function CalendarView() {
 
   useEffect(() => {
     const loadTasks = async () => {
-      const filters = user?.role === 'collaborator' ? { assignedTo: user.id } : {};
+      const filters = user?.role === 'collaborator' ? { assigneeId: user.id } : {};
       const data = await tasksApi.getAll(filters);
       setTasks(data);
     };

@@ -37,7 +37,6 @@ export default function CreateTask() {
     const loadUsers = async () => {
       try {
         const allUsers = await usersApi.getAll();
-        console.log('Fetched users:', allUsers);
         setUsers(allUsers.filter(u => u.role === 'collaborator'));
       } catch (error) {
         console.error('Failed to load users:', error);
@@ -100,7 +99,7 @@ export default function CreateTask() {
 
   return (
     <AppShell>
-      <div className="space-y-4 md:space-y-6 animate-fade-in max-w-3xl">
+      <div className="page-shell space-y-4 md:space-y-6 animate-fade-in max-w-3xl">
         <div className="flex items-center gap-2 md:gap-4">
           <Button variant="ghost" size="icon" onClick={() => navigate('/tasks')} className="flex-shrink-0">
             <ArrowLeft className="h-5 w-5" />
@@ -139,11 +138,11 @@ export default function CreateTask() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="backlog">Backlog</SelectItem>
                     <SelectItem value="todo">To Do</SelectItem>
-                    <SelectItem value="in-progress">In Progress</SelectItem>
-                    <SelectItem value="blocked">Blocked</SelectItem>
-                    <SelectItem value="review">Review</SelectItem>
+                    <SelectItem value="in_progress">In Progress</SelectItem>
                     <SelectItem value="done">Done</SelectItem>
+                    <SelectItem value="cancelled">Cancelled</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -155,9 +154,11 @@ export default function CreateTask() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="none">No Priority</SelectItem>
                     <SelectItem value="low">Low</SelectItem>
                     <SelectItem value="medium">Medium</SelectItem>
                     <SelectItem value="high">High</SelectItem>
+                    <SelectItem value="urgent">Urgent</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

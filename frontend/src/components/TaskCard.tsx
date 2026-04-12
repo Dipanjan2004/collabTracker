@@ -27,18 +27,20 @@ interface TaskCardProps {
   isArchived?: boolean;
 }
 
-const priorityColors = {
-  low: 'border-emerald-500/20 bg-emerald-500/10 text-emerald-400',
-  medium: 'border-amber-500/20 bg-amber-500/10 text-amber-400',
-  high: 'border-rose-500/20 bg-rose-500/10 text-rose-400',
+const statusColors = {
+  backlog: 'border-white/10 bg-white/5 text-white/60',
+  todo: 'border-white/10 bg-white/5 text-white/60',
+  'in_progress': 'border-blue-500/20 bg-blue-500/10 text-blue-400',
+  done: 'border-emerald-500/20 bg-emerald-500/10 text-emerald-400',
+  cancelled: 'border-white/10 bg-white/5 text-white/40 line-through',
 };
 
-const statusColors = {
-  todo: 'border-white/10 bg-white/5 text-white/60',
-  'in-progress': 'border-blue-500/20 bg-blue-500/10 text-blue-400',
-  blocked: 'border-rose-500/20 bg-rose-500/10 text-rose-400',
-  review: 'border-amber-500/20 bg-amber-500/10 text-amber-400',
-  done: 'border-emerald-500/20 bg-emerald-500/10 text-emerald-400',
+const priorityColors = {
+  none: 'border-white/10 bg-white/5 text-white/30',
+  low: 'border-blue-500/20 bg-blue-500/10 text-blue-400',
+  medium: 'border-amber-500/20 bg-amber-500/10 text-amber-400',
+  high: 'border-rose-500/20 bg-rose-500/10 text-rose-400',
+  urgent: 'border-red-500/20 bg-red-500/10 text-red-400',
 };
 
 export function TaskCard({ task, progressLogs = [], onDelete, onStatusChange, onArchive, onClone, showDelete = false, compact = false, isSelected = false, onSelect, showCheckbox = false, isArchived = false }: TaskCardProps) {
@@ -49,7 +51,7 @@ export function TaskCard({ task, progressLogs = [], onDelete, onStatusChange, on
     ? Math.max(...progressLogs.map(p => p.percentageComplete))
     : 0;
 
-  const isOverdue = new Date(task.deadline) < new Date() && task.status !== 'done';
+  const isOverdue = task.deadline && new Date(task.deadline) < new Date() && task.status !== 'done' && task.status !== 'cancelled';
 
   useEffect(() => {
     const loadUsers = async () => {
@@ -88,7 +90,9 @@ export function TaskCard({ task, progressLogs = [], onDelete, onStatusChange, on
       )}
       onClick={() => !showDelete && navigate(`/tasks/${task.id}`)}
     >
-      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#ff4500]/50 via-[#ff4500] to-[#ff4500]/50" />
+      {(task.priority === 'urgent' || task.priority === 'high' || isOverdue) && (
+        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#ff4500]/50 via-[#ff4500] to-[#ff4500]/50" />
+      )}
       <div className={cn("space-y-3", showDelete && "pr-10")}>
         <div className="flex items-start justify-between gap-2">
           {showCheckbox && onSelect && (
@@ -150,7 +154,11 @@ export function TaskCard({ task, progressLogs = [], onDelete, onStatusChange, on
             <div className="flex items-center gap-1">
               <Calendar className="h-3 w-3" />
               <span className={isOverdue ? 'font-medium text-rose-600' : ''}>
-                {isOverdue ? 'Overdue' : formatDistanceToNow(new Date(task.deadline), { addSuffix: true })}
+                {!task.deadline
+                  ? 'No deadline'
+                  : isOverdue
+                    ? 'Overdue'
+                    : formatDistanceToNow(new Date(task.deadline), { addSuffix: true })}
               </span>
             </div>
             <div className="flex items-center gap-1">
@@ -171,7 +179,7 @@ export function TaskCard({ task, progressLogs = [], onDelete, onStatusChange, on
 
         <div className="flex items-center justify-between gap-2">
           <Badge className={statusColors[task.status]} variant="secondary">
-            {task.status.replace('-', ' ')}
+            {task.status.replace('_', ' ')}
           </Badge>
           {onStatusChange && (
             <Select
@@ -183,11 +191,11 @@ export function TaskCard({ task, progressLogs = [], onDelete, onStatusChange, on
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="backlog">Backlog</SelectItem>
                 <SelectItem value="todo">To Do</SelectItem>
-                <SelectItem value="in-progress">In Progress</SelectItem>
-                <SelectItem value="blocked">Blocked</SelectItem>
-                <SelectItem value="review">Review</SelectItem>
+                <SelectItem value="in_progress">In Progress</SelectItem>
                 <SelectItem value="done">Done</SelectItem>
+                <SelectItem value="cancelled">Cancelled</SelectItem>
               </SelectContent>
             </Select>
           )}

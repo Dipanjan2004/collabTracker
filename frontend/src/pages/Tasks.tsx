@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Search, Filter, X, Grid3x3, List, Calendar as CalendarIcon, LayoutGrid, CheckSquare, Square } from 'lucide-react';
+import { Plus, Search, Filter, X, Grid3x3, List, Calendar as CalendarIcon, LayoutGrid, CheckSquare, Square, Trash2 } from 'lucide-react';
 import CalendarView from './CalendarView';
 import { Task, ProgressLog, TaskStatus, TaskPriority } from '@/types';
 import { tasksApi, progressApi } from '@/services/api';
@@ -63,7 +63,7 @@ export default function Tasks() {
 
   useEffect(() => {
     const loadTasks = async () => {
-      const filters: any = user?.role === 'collaborator' ? { assignedTo: user.id } : {};
+      const filters: any = user?.role === 'collaborator' ? { assigneeId: user.id } : {};
       filters.archived = showArchived;
       const data = await tasksApi.getAll(filters);
       setTasks(data);
@@ -107,7 +107,7 @@ export default function Tasks() {
           comparison = new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
           break;
         case 'priority':
-          const priorityOrder: Record<TaskPriority, number> = { high: 3, medium: 2, low: 1 };
+          const priorityOrder: Record<TaskPriority, number> = { urgent: 4, high: 3, medium: 2, low: 1, none: 0 };
           comparison = priorityOrder[b.priority] - priorityOrder[a.priority];
           break;
         case 'created':
@@ -212,7 +212,7 @@ export default function Tasks() {
       }
       
       // Reload tasks
-      const filters: any = user?.role === 'collaborator' ? { assignedTo: user.id } : {};
+      const filters: any = user?.role === 'collaborator' ? { assigneeId: user.id } : {};
       filters.archived = showArchived;
       const data = await tasksApi.getAll(filters);
       setTasks(data);
@@ -245,7 +245,7 @@ export default function Tasks() {
   };
   
   const reloadTasks = async () => {
-    const filters = user?.role === 'collaborator' ? { assignedTo: user.id } : {};
+    const filters = user?.role === 'collaborator' ? { assigneeId: user.id } : {};
     const data = await tasksApi.getAll(filters);
     setTasks(data);
   };
@@ -292,7 +292,8 @@ export default function Tasks() {
   
   const handleBulkDelete = () => {
     if (selectedTasks.size === 0) return;
-    setTaskToDelete(Array.from(selectedTasks)[0]); // Use existing delete flow for first task
+    setBulkDeleteMode(true);
+    setTaskToDelete(Array.from(selectedTasks)[0]);
   };
 
   return (
@@ -403,7 +404,7 @@ export default function Tasks() {
                   <div>
                     <label className="text-sm font-medium mb-2 block">Status</label>
                     <div className="space-y-2">
-                      {(['todo', 'in-progress', 'blocked', 'review', 'done'] as TaskStatus[]).map((status) => (
+                      {(['backlog', 'todo', 'in_progress', 'done', 'cancelled'] as TaskStatus[]).map((status) => (
                         <div key={status} className="flex items-center space-x-2">
                           <Checkbox
                             id={`status-${status}`}
@@ -431,7 +432,7 @@ export default function Tasks() {
                   <div>
                     <label className="text-sm font-medium mb-2 block">Priority</label>
                     <div className="space-y-2">
-                      {(['low', 'medium', 'high'] as TaskPriority[]).map((priority) => (
+                      {(['none', 'low', 'medium', 'high', 'urgent'] as TaskPriority[]).map((priority) => (
                         <div key={priority} className="flex items-center space-x-2">
                           <Checkbox
                             id={`priority-${priority}`}
@@ -579,6 +580,35 @@ export default function Tasks() {
             )}
           </div>
         </div>
+
+        {selectedTasks.size > 0 && (
+          <div className="bg-white/5 border border-white/10 rounded-lg p-3 flex items-center gap-3">
+            <span className="text-sm text-muted-foreground">
+              {selectedTasks.size} task{selectedTasks.size !== 1 ? 's' : ''} selected
+            </span>
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={handleBulkDelete}
+              className="gap-1"
+            >
+              <Trash2 className="h-4 w-4" />
+              Delete Selected
+            </Button>
+            <Select onValueChange={(val) => handleBulkStatusChange(val as TaskStatus)}>
+              <SelectTrigger className="w-[160px] h-9">
+                <SelectValue placeholder="Change status..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="backlog">Backlog</SelectItem>
+                <SelectItem value="todo">Todo</SelectItem>
+                <SelectItem value="in_progress">In Progress</SelectItem>
+                <SelectItem value="done">Done</SelectItem>
+                <SelectItem value="cancelled">Cancelled</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        )}
 
         {viewMode === 'grid' && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

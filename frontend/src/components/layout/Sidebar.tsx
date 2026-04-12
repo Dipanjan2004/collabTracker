@@ -1,112 +1,179 @@
-import { 
-  LayoutDashboard, CheckSquare, Activity, Users, Settings, ChevronLeft, FileText
+import { useState } from 'react';
+import {
+  Bell,
+  CheckSquare,
+  ChevronDown,
+  ChevronRight,
+  Settings,
+  LayoutList,
+  FolderKanban,
+  Eye,
 } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
+import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/button';
-import { useState } from 'react';
 import { cn } from '@/lib/utils';
-import {
-  Sheet,
-  SheetContent,
-} from '@/components/ui/sheet';
+import { Sheet, SheetContent } from '@/components/ui/sheet';
 
-const navItems = [
-  { title: 'Dashboard', icon: LayoutDashboard, path: '/dashboard', roles: ['admin', 'collaborator'] },
-  { title: 'Tasks', icon: CheckSquare, path: '/tasks', roles: ['admin', 'collaborator'] },
-  { title: 'Templates', icon: FileText, path: '/templates', roles: ['admin'] },
-  { title: 'Activity', icon: Activity, path: '/activity', roles: ['admin', 'collaborator'] },
-  { title: 'Users', icon: Users, path: '/users', roles: ['admin'] },
-  { title: 'Settings', icon: Settings, path: '/settings', roles: ['admin', 'collaborator'] },
-];
-
-interface SidebarProps {
-  mobileOpen?: boolean;
-  onMobileClose?: () => void;
-}
-
-const SidebarContent = ({ collapsed, onToggleCollapse }: { collapsed: boolean; onToggleCollapse: () => void }) => {
+function SidebarNav() {
+  const { teams } = useWorkspace();
   const { user } = useAuth();
-  const filteredItems = navItems.filter(item => 
-    user && item.roles.includes(user.role)
-  );
+  const [favoritesOpen, setFavoritesOpen] = useState(true);
+  const [openTeams, setOpenTeams] = useState<Record<string, boolean>>({});
+
+  const toggleTeam = (teamId: string) => {
+    setOpenTeams((prev) => ({ ...prev, [teamId]: !prev[teamId] }));
+  };
+
+  const navLinkClass =
+    'flex items-center gap-2 h-8 px-3 text-[13px] rounded-md transition-colors';
+  const activeClass = 'bg-white/[0.08] text-white';
+  const inactiveClass = 'text-white/50 hover:bg-white/[0.05] hover:text-white/70';
 
   return (
-    <div className="flex h-full flex-col">
-      <div className="flex items-center justify-between border-b border-sidebar-border px-4 py-5">
-        {!collapsed && (
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-sidebar-foreground/55">
-              Workspace
-            </p>
-            <p className="mt-1 text-lg font-semibold text-sidebar-foreground">CollabTrack</p>
-          </div>
-        )}
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={onToggleCollapse}
-          className="hidden h-8 w-8 text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground md:flex"
-        >
-          <ChevronLeft className={cn(
-            "h-4 w-4 transition-transform",
-            collapsed && "rotate-180"
-          )} />
-        </Button>
+    <div className="flex h-full flex-col bg-[#0a0a0a] text-white" style={{ fontFamily: 'Inter, sans-serif', fontSize: 13 }}>
+      <div className="flex items-center gap-1.5 px-3 h-11 shrink-0">
+        <span className="font-semibold text-sm text-white">CollabTrack</span>
+        <ChevronDown className="h-3.5 w-3.5 text-white/40" />
       </div>
 
-      <nav className="flex-1 space-y-1 px-3 py-4">
-        {filteredItems.map((item) => (
-          <NavLink
-            key={item.path}
-            to={item.path}
-            className={cn(
-              "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground",
-              collapsed && "justify-center px-2"
-            )}
-            activeClassName="bg-primary text-white shadow-sm"
-          >
-            <item.icon className="h-5 w-5 flex-shrink-0" />
-            {!collapsed && <span>{item.title}</span>}
-          </NavLink>
-        ))}
+      <div className="border-t border-white/5" />
+
+      <nav className="flex flex-col gap-0.5 px-2 py-1.5">
+        <NavLink
+          to="/inbox"
+          className={cn(navLinkClass, inactiveClass)}
+          activeClassName={activeClass}
+        >
+          <Bell className="h-4 w-4 shrink-0" />
+          <span>Inbox</span>
+        </NavLink>
+        <NavLink
+          to="/my-issues"
+          className={cn(navLinkClass, inactiveClass)}
+          activeClassName={activeClass}
+        >
+          <CheckSquare className="h-4 w-4 shrink-0" />
+          <span>My Issues</span>
+        </NavLink>
       </nav>
 
-      {!collapsed && user && (
-        <div className="border-t border-sidebar-border px-4 py-4">
-          <div className="rounded-2xl bg-sidebar-accent px-4 py-3">
-            <p className="text-sm font-semibold text-sidebar-foreground">{user.name}</p>
-            <p className="mt-1 text-xs uppercase tracking-[0.16em] text-sidebar-foreground/60">
-              {user.role}
-            </p>
+      <div className="border-t border-white/5 mx-2" />
+
+      <div className="px-2 py-1.5">
+        <button
+          onClick={() => setFavoritesOpen(!favoritesOpen)}
+          className={cn(navLinkClass, 'w-full text-white/50 hover:text-white/70')}
+        >
+          <ChevronRight
+            className={cn(
+              'h-3.5 w-3.5 shrink-0 transition-transform',
+              favoritesOpen && 'rotate-90'
+            )}
+          />
+          <span className="text-[11px] font-medium uppercase tracking-wider text-white/30">
+            Favorites
+          </span>
+        </button>
+        {favoritesOpen && (
+          <div className="ml-5 mt-0.5 text-[13px] text-white/20 italic px-3 h-8 flex items-center">
+            No favorites yet
           </div>
-        </div>
-      )}
+        )}
+      </div>
+
+      <div className="px-2 py-1.5">
+        {teams.map((team) => (
+          <div key={team.id}>
+            <button
+              onClick={() => toggleTeam(team.id)}
+              className={cn(navLinkClass, 'w-full text-white/50 hover:text-white/70 hover:bg-white/[0.05]')}
+            >
+              <ChevronRight
+                className={cn(
+                  'h-3.5 w-3.5 shrink-0 transition-transform',
+                  openTeams[team.id] !== false && 'rotate-90'
+                )}
+              />
+              <span
+                className="h-2.5 w-2.5 rounded-full shrink-0"
+                style={{ backgroundColor: team.color || '#888' }}
+              />
+              <span className="truncate">{team.name}</span>
+              <span className="ml-auto text-[11px] text-white/25 font-mono">
+                {team.identifier}
+              </span>
+            </button>
+            {openTeams[team.id] !== false && (
+              <div className="ml-5 flex flex-col gap-0.5">
+                <NavLink
+                  to={`/team/${team.id}/issues`}
+                  className={cn(navLinkClass, inactiveClass)}
+                  activeClassName={activeClass}
+                >
+                  <LayoutList className="h-3.5 w-3.5 shrink-0" />
+                  <span>Issues</span>
+                </NavLink>
+                <NavLink
+                  to={`/team/${team.id}/projects`}
+                  className={cn(navLinkClass, inactiveClass)}
+                  activeClassName={activeClass}
+                >
+                  <FolderKanban className="h-3.5 w-3.5 shrink-0" />
+                  <span>Projects</span>
+                </NavLink>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      <div className="border-t border-white/5 mx-2" />
+
+      <nav className="flex flex-col gap-0.5 px-2 py-1.5">
+        <NavLink
+          to="/views"
+          className={cn(navLinkClass, inactiveClass)}
+          activeClassName={activeClass}
+        >
+          <Eye className="h-4 w-4 shrink-0" />
+          <span>Views</span>
+        </NavLink>
+      </nav>
+
+      <div className="mt-auto shrink-0">
+        <div className="border-t border-white/5 mx-2" />
+        <nav className="px-2 py-1.5">
+          <NavLink
+            to="/settings"
+            className={cn(navLinkClass, inactiveClass)}
+            activeClassName={activeClass}
+          >
+            <Settings className="h-4 w-4 shrink-0" />
+            <span>Settings</span>
+          </NavLink>
+        </nav>
+      </div>
     </div>
   );
-};
+}
 
-export function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
-  const [collapsed, setCollapsed] = useState(false);
-
+export function Sidebar({
+  mobileOpen,
+  onMobileClose,
+}: {
+  mobileOpen?: boolean;
+  onMobileClose?: () => void;
+}) {
   return (
     <>
-      {/* Desktop Sidebar */}
-      <aside
-        className={cn(
-          "sticky top-0 hidden h-screen border-r border-sidebar-border bg-sidebar transition-all duration-300 md:block",
-          collapsed ? "w-16" : "w-64"
-        )}
-      >
-        <SidebarContent collapsed={collapsed} onToggleCollapse={() => setCollapsed(!collapsed)} />
+      <aside className="hidden md:block w-[240px] shrink-0 h-screen sticky top-0 border-r border-white/5">
+        <SidebarNav />
       </aside>
 
-      {/* Mobile Sidebar (Sheet) */}
-      <Sheet open={mobileOpen} onOpenChange={onMobileClose}>
-        <SheetContent side="left" className="w-[280px] border-sidebar-border bg-sidebar p-0">
-          <div className="h-full">
-            <SidebarContent collapsed={false} onToggleCollapse={() => {}} />
-          </div>
+      <Sheet open={mobileOpen} onOpenChange={(open) => !open && onMobileClose?.()}>
+        <SheetContent side="left" className="w-[280px] border-white/5 bg-[#0a0a0a] p-0">
+          <SidebarNav />
         </SheetContent>
       </Sheet>
     </>

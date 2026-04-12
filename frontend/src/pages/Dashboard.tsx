@@ -33,17 +33,19 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { format } from 'date-fns';
 
 const statusColors = {
+  backlog: 'border-white/10 bg-white/5 text-white/60',
   todo: 'border-white/10 bg-white/5 text-white/60',
-  'in-progress': 'border-blue-500/20 bg-blue-500/10 text-blue-400',
-  blocked: 'border-rose-500/20 bg-rose-500/10 text-rose-400',
-  review: 'border-amber-500/20 bg-amber-500/10 text-amber-400',
+  'in_progress': 'border-blue-500/20 bg-blue-500/10 text-blue-400',
   done: 'border-emerald-500/20 bg-emerald-500/10 text-emerald-400',
+  cancelled: 'border-white/10 bg-white/5 text-white/40 line-through',
 };
 
 const priorityColors = {
-  low: 'border-emerald-500/20 bg-emerald-500/10 text-emerald-400',
+  none: 'border-white/10 bg-white/5 text-white/30',
+  low: 'border-blue-500/20 bg-blue-500/10 text-blue-400',
   medium: 'border-amber-500/20 bg-amber-500/10 text-amber-400',
   high: 'border-rose-500/20 bg-rose-500/10 text-rose-400',
+  urgent: 'border-red-500/20 bg-red-500/10 text-red-400',
 };
 
 export default function Dashboard() {
@@ -96,7 +98,7 @@ export default function Dashboard() {
         // Load overdue tasks
         const now = new Date();
         const overdue = allTasks.filter(t => 
-          new Date(t.deadline) < now && t.status !== 'done'
+          t.deadline && new Date(t.deadline) < now && t.status !== 'done' && t.status !== 'cancelled'
         );
         setOverdueTasks(overdue);
         
@@ -105,16 +107,19 @@ export default function Dashboard() {
         const active = allUsers.filter(u => u.role === 'collaborator' && u.active);
         setActiveContributors(active);
         
-        // Load hours data
+        // Load hours data from recently active tasks only (limit to 20 to avoid N+1 explosion)
+        const recentActiveTasks = allTasks
+          .filter(t => t.status === 'in_progress' || t.status === 'done')
+          .slice(0, 20);
         const allProgress = await Promise.all(
-          allTasks.map(t => progressApi.getByTaskId(t.id))
+          recentActiveTasks.map(t => progressApi.getByTaskId(t.id))
         );
         const flatProgress = allProgress.flat();
         const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
         const recentProgress = flatProgress.filter(p => new Date(p.createdAt) > weekAgo);
         setHoursData(recentProgress);
       } else {
-        const myTasks = await tasksApi.getAll({ assignedTo: user?.id });
+        const myTasks = await tasksApi.getAll({ assigneeId: user?.id });
         setTasks(myTasks);
 
         // Load progress for each task
@@ -129,8 +134,8 @@ export default function Dashboard() {
 
     loadData();
     
-    // Set up interval to check for updates every 5 seconds
-    const interval = setInterval(loadData, 5000);
+    // Refresh every 60 seconds instead of 5 to avoid excessive API calls
+    const interval = setInterval(loadData, 60000);
     return () => clearInterval(interval);
   }, [user]);
 

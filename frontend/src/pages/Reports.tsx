@@ -104,6 +104,7 @@ export default function Reports() {
                   type="date"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
+                  className="[color-scheme:dark]"
                 />
               </div>
 
@@ -116,6 +117,7 @@ export default function Reports() {
                   type="date"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
+                  className="[color-scheme:dark]"
                 />
               </div>
             </div>

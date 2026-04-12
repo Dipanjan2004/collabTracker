@@ -14,9 +14,15 @@ from app.routes import (
     activity,
     dependencies,
     templates,
+    teams,
+    labels,
+    cycles,
+    views,
+    favorites,
+    search,
 )
 
-app = FastAPI(title="CollabTracker API", version="2.0.0", redirect_slashes=False)
+app = FastAPI(title="CollabTracker API", version="3.0.0", redirect_slashes=False)
 
 origins = FRONTEND_URL.split(",") if FRONTEND_URL else ["*"]
 if NODE_ENV == "development":
@@ -55,6 +61,12 @@ app.include_router(
     dependencies.router, prefix="/api/dependencies", tags=["dependencies"]
 )
 app.include_router(templates.router, prefix="/api/templates", tags=["templates"])
+app.include_router(teams.router, prefix="/api/teams", tags=["teams"])
+app.include_router(labels.router, prefix="/api/labels", tags=["labels"])
+app.include_router(cycles.router, prefix="/api/cycles", tags=["cycles"])
+app.include_router(views.router, prefix="/api/views", tags=["views"])
+app.include_router(favorites.router, prefix="/api/favorites", tags=["favorites"])
+app.include_router(search.router, prefix="/api/search", tags=["search"])
 
 
 from fastapi.responses import JSONResponse

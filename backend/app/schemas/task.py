@@ -1,5 +1,9 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 from typing import Optional, List
+
+
+VALID_STATUSES = ("backlog", "todo", "in_progress", "done", "cancelled")
+VALID_PRIORITIES = ("none", "low", "medium", "high", "urgent")
 
 
 class TaskCreate(BaseModel):
@@ -13,6 +17,25 @@ class TaskCreate(BaseModel):
     deadline: Optional[str] = None
     projectId: Optional[str] = None
     archived: Optional[bool] = False
+    teamId: Optional[str] = None
+    assigneeId: Optional[str] = None
+    estimate: Optional[float] = None
+    startDate: Optional[str] = None
+    labelIds: Optional[List[str]] = []
+
+    @field_validator("status")
+    @classmethod
+    def validate_status(cls, v):
+        if v is not None and v not in VALID_STATUSES:
+            raise ValueError(f"status must be one of {VALID_STATUSES}")
+        return v
+
+    @field_validator("priority")
+    @classmethod
+    def validate_priority(cls, v):
+        if v is not None and v not in VALID_PRIORITIES:
+            raise ValueError(f"priority must be one of {VALID_PRIORITIES}")
+        return v
 
 
 class TaskUpdate(BaseModel):
@@ -26,3 +49,22 @@ class TaskUpdate(BaseModel):
     deadline: Optional[str] = None
     projectId: Optional[str] = None
     archived: Optional[bool] = None
+    teamId: Optional[str] = None
+    assigneeId: Optional[str] = ""  # sentinel: "" means explicitly sent; None means not sent
+    estimate: Optional[float] = None
+    startDate: Optional[str] = None
+    cycleId: Optional[str] = None
+
+    @field_validator("status")
+    @classmethod
+    def validate_status(cls, v):
+        if v is not None and v not in VALID_STATUSES:
+            raise ValueError(f"status must be one of {VALID_STATUSES}")
+        return v
+
+    @field_validator("priority")
+    @classmethod
+    def validate_priority(cls, v):
+        if v is not None and v not in VALID_PRIORITIES:
+            raise ValueError(f"priority must be one of {VALID_PRIORITIES}")
+        return v

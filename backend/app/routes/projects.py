@@ -38,6 +38,18 @@ async def create_project(
         "color": body.color or "#6EE7B7",
         "created_by": current_user["id"],
     }
+    if body.teamId:
+        project_data["team_id"] = body.teamId
+    if body.status:
+        project_data["status"] = body.status
+    if body.leadId:
+        project_data["lead_id"] = body.leadId
+    if body.startDate:
+        project_data["start_date"] = body.startDate
+    if body.targetDate:
+        project_data["target_date"] = body.targetDate
+    if body.icon:
+        project_data["icon"] = body.icon
 
     response = supabase.table("projects").insert(project_data).execute()
     project = response.data[0]
@@ -51,12 +63,21 @@ async def update_project(
     project_id: str, body: ProjectUpdate, current_user: dict = Depends(get_current_user)
 ):
     update_data = {}
-    if body.name is not None:
-        update_data["name"] = body.name
-    if body.description is not None:
-        update_data["description"] = body.description
-    if body.color is not None:
-        update_data["color"] = body.color
+    field_map = {
+        "name": "name",
+        "description": "description",
+        "color": "color",
+        "teamId": "team_id",
+        "status": "status",
+        "leadId": "lead_id",
+        "startDate": "start_date",
+        "targetDate": "target_date",
+        "icon": "icon",
+    }
+    for camel_key, snake_key in field_map.items():
+        value = getattr(body, camel_key, None)
+        if value is not None:
+            update_data[snake_key] = value
 
     if not update_data:
         raise HTTPException(

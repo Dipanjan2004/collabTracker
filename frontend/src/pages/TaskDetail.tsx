@@ -361,17 +361,19 @@ export default function TaskDetail() {
   const assignedToArray = Array.isArray(task.assignedTo) ? task.assignedTo : [];
 
   const statusColors = {
-    'todo': 'bg-muted',
-    'in-progress': 'bg-blue-500/20 text-blue-400',
-    'blocked': 'bg-red-500/20 text-red-400',
-    'review': 'bg-yellow-500/20 text-yellow-400',
-    'done': 'bg-green-500/20 text-green-400',
+    backlog: 'border-white/10 bg-white/5 text-white/60',
+    todo: 'border-white/10 bg-white/5 text-white/60',
+    'in_progress': 'border-blue-500/20 bg-blue-500/10 text-blue-400',
+    done: 'border-emerald-500/20 bg-emerald-500/10 text-emerald-400',
+    cancelled: 'border-white/10 bg-white/5 text-white/40 line-through',
   };
 
   const priorityColors = {
-    'low': 'bg-gray-500/20 text-gray-400',
-    'medium': 'bg-yellow-500/20 text-yellow-400',
-    'high': 'bg-red-500/20 text-red-400',
+    none: 'border-white/10 bg-white/5 text-white/30',
+    low: 'border-blue-500/20 bg-blue-500/10 text-blue-400',
+    medium: 'border-amber-500/20 bg-amber-500/10 text-amber-400',
+    high: 'border-rose-500/20 bg-rose-500/10 text-rose-400',
+    urgent: 'border-red-500/20 bg-red-500/10 text-red-400',
   };
 
   return (
@@ -407,12 +409,12 @@ export default function TaskDetail() {
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4">
               <div className="flex items-center gap-2">
-                <Badge className={statusColors[task.status] || statusColors.todo}>
+                <Badge className={statusColors[task.status as keyof typeof statusColors] || statusColors.todo}>
                   {task.status || 'todo'}
                 </Badge>
               </div>
               <div className="flex items-center gap-2">
-                <Badge className={priorityColors[task.priority] || priorityColors.medium}>
+                <Badge className={priorityColors[task.priority as keyof typeof priorityColors] || priorityColors.medium}>
                   {task.priority || 'medium'}
                 </Badge>
               </div>
@@ -469,7 +471,7 @@ export default function TaskDetail() {
                     Pause
                   </Button>
                   <Button onClick={stopTimer} variant="destructive" className="flex-1">
-                    <Stopwatch className="h-4 w-4 mr-2" />
+                    <Timer className="h-4 w-4 mr-2" />
                     Stop & Save
                   </Button>
                 </>

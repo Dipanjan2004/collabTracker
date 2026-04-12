@@ -23,17 +23,19 @@ import {
 } from '@/components/ui/alert-dialog';
 
 const statusColumns: { status: TaskStatus; label: string; color: string }[] = [
-  { status: 'todo', label: 'To Do', color: 'bg-gray-500/20 text-gray-500 border-gray-500/30' },
-  { status: 'in-progress', label: 'In Progress', color: 'bg-blue-500/20 text-blue-500 border-blue-500/30' },
-  { status: 'blocked', label: 'Blocked', color: 'bg-red-500/20 text-red-500 border-red-500/30' },
-  { status: 'review', label: 'Review', color: 'bg-yellow-500/20 text-yellow-500 border-yellow-500/30' },
+  { status: 'backlog', label: 'Backlog', color: 'bg-gray-500/20 text-gray-500 border-gray-500/30' },
+  { status: 'todo', label: 'To Do', color: 'bg-gray-400/20 text-gray-400 border-gray-400/30' },
+  { status: 'in_progress', label: 'In Progress', color: 'bg-blue-500/20 text-blue-500 border-blue-500/30' },
   { status: 'done', label: 'Done', color: 'bg-green-500/20 text-green-500 border-green-500/30' },
+  { status: 'cancelled', label: 'Cancelled', color: 'bg-red-500/20 text-red-500 border-red-500/30' },
 ];
 
-const priorityColors = {
-  low: 'bg-green-500/10 text-green-500 border-green-500/20',
+const priorityColors: Record<string, string> = {
+  none: 'bg-gray-500/10 text-gray-500 border-gray-500/20',
+  low: 'bg-blue-500/10 text-blue-500 border-blue-500/20',
   medium: 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20',
   high: 'bg-red-500/10 text-red-500 border-red-500/20',
+  urgent: 'bg-red-600/10 text-red-600 border-red-600/20',
 };
 
 export default function KanbanView() {
@@ -46,7 +48,7 @@ export default function KanbanView() {
 
   useEffect(() => {
     const loadTasks = async () => {
-      const filters = user?.role === 'collaborator' ? { assignedTo: user.id } : {};
+      const filters = user?.role === 'collaborator' ? { assigneeId: user.id } : {};
       const data = await tasksApi.getAll(filters);
       setTasks(data);
     };
@@ -152,7 +154,7 @@ export default function KanbanView() {
 
                   <div className="space-y-3 min-h-[400px]">
                     {columnTasks.map((task) => {
-                      const overdue = isOverdue(task.deadline) && task.status !== 'done';
+                      const overdue = !!task.deadline && isOverdue(task.deadline) && task.status !== 'done' && task.status !== 'cancelled';
                       return (
                         <Card
                           key={task.id}
@@ -203,7 +205,9 @@ export default function KanbanView() {
                               <div className="flex items-center gap-1">
                                 <Calendar className="h-3 w-3" />
                                 <span className={overdue ? 'text-red-500 font-medium' : ''}>
-                                  {formatDistanceToNow(new Date(task.deadline), { addSuffix: true })}
+                                  {task.deadline
+                                    ? formatDistanceToNow(new Date(task.deadline), { addSuffix: true })
+                                    : 'No deadline'}
                                 </span>
                               </div>
                               <div className="flex items-center gap-1">

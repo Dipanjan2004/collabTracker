@@ -2,13 +2,18 @@ import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, ArrowRight } from 'lucide-react';
+import { authApi } from '@/services/api';
+import { Loader2, ArrowRight, Building2 } from 'lucide-react';
 
 export default function Register() {
   const navigate = useNavigate();
   const { register } = useAuth();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [isCheckingDomain, setIsCheckingDomain] = useState(false);
+  const [domainChecked, setDomainChecked] = useState(false);
+  const [hasOrganization, setHasOrganization] = useState(false);
+  const [orgName, setOrgName] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -28,36 +33,58 @@ export default function Register() {
     transition: `opacity 0.7s cubic-bezier(.16,1,.3,1) ${delay}s, transform 0.7s cubic-bezier(.16,1,.3,1) ${delay}s`,
   });
 
+  const checkDomain = async () => {
+    if (!formData.email || !formData.email.includes('@')) return;
+    setIsCheckingDomain(true);
+    try {
+      const result = await authApi.checkDomain(formData.email);
+      setHasOrganization(result.hasOrganization);
+      if (result.hasOrganization && result.organization) {
+        setOrgName(result.organization.name);
+      }
+      setDomainChecked(true);
+    } catch {
+      setDomainChecked(false);
+    } finally {
+      setIsCheckingDomain(false);
+    }
+  };
+
+  const handleEmailBlur = () => {
+    if (formData.email.includes('@') && formData.email !== '' && !domainChecked) {
+      checkDomain();
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
-      toast({
-        title: 'Password mismatch',
-        description: 'Passwords do not match',
-        variant: 'destructive',
-      });
+      toast({ title: 'Password mismatch', description: 'Passwords do not match', variant: 'destructive' });
       return;
     }
 
     if (formData.password.length < 8) {
-      toast({
-        title: 'Weak password',
-        description: 'Password must be at least 8 characters',
-        variant: 'destructive',
-      });
+      toast({ title: 'Weak password', description: 'Password must be at least 8 characters', variant: 'destructive' });
       return;
     }
 
     setIsLoading(true);
 
     try {
-      await register(formData.name, formData.email, formData.password);
+      const result = await register(
+        formData.name,
+        formData.email,
+        formData.password,
+        hasOrganization ? undefined : orgName
+      );
       toast({
-        title: 'Account created!',
-        description: 'Welcome to CollabTrack.',
+        title: result.isNewOrganization ? 'Organization created!' : 'Account created!',
+        description: result.isNewOrganization
+          ? `Welcome to ${orgName}. You're the admin.`
+          : 'Welcome to the team.',
       });
-      navigate('/dashboard');
+      navigate('/my-issues');
     } catch (error) {
       toast({
         title: 'Registration failed',
@@ -110,8 +137,19 @@ export default function Register() {
             </h1>
 
             <p className="landing-body" style={{ marginTop: 24, maxWidth: 440 }}>
-              Create your account to start coordinating delivery, collecting progress updates, and reporting with less friction.
+              {hasOrganization
+                ? `You're joining an existing organization. Enter your details to get started.`
+                : 'Create your account and set up a new organization for your team.'}
             </p>
+
+            {domainChecked && hasOrganization && (
+              <div style={{ marginTop: 20, borderRadius: 8, border: '1px solid #1a1a1a', background: '#0a0a0a', padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 10 }}>
+                <Building2 style={{ width: 16, height: 16, color: '#ff4500' }} />
+                <span style={{ fontSize: 13, fontFamily: 'monospace', color: '#888' }}>
+                  Joining <span style={{ color: '#fff' }}>{orgName}</span>
+                </span>
+              </div>
+            )}
 
             <div style={{ marginTop: 48, borderRadius: 8, border: '1px solid #1a1a1a', background: '#0a0a0a', padding: 32 }}>
               <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
@@ -133,15 +171,42 @@ export default function Register() {
                   <label className="landing-eyebrow" style={{ display: 'block', marginBottom: 8, color: '#555' }}>Email</label>
                   <input
                     type="email"
-                    placeholder="your@email.com"
+                    placeholder="your@company.com"
                     value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    onChange={(e) => { setFormData({ ...formData, email: e.target.value }); setDomainChecked(false); }}
+                    onBlur={(e) => { e.currentTarget.style.borderColor = '#333'; handleEmailBlur(); }}
                     required
                     style={inputStyle}
                     onFocus={(e) => { e.currentTarget.style.borderColor = '#555'; }}
-                    onBlur={(e) => { e.currentTarget.style.borderColor = '#333'; }}
                   />
+                  {isCheckingDomain && (
+                    <p style={{ fontSize: 11, color: '#555', fontFamily: 'monospace', marginTop: 6 }}>
+                      Checking organization...
+                    </p>
+                  )}
                 </div>
+
+                {!hasOrganization && domainChecked && (
+                  <div>
+                    <label className="landing-eyebrow" style={{ display: 'block', marginBottom: 8, color: '#ff4500' }}>
+                      <Building2 style={{ width: 12, height: 12, display: 'inline', marginRight: 4, verticalAlign: 'middle' }} />
+                      Organization Name
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Acme Corp"
+                      value={orgName}
+                      onChange={(e) => setOrgName(e.target.value)}
+                      required={!hasOrganization}
+                      style={{ ...inputStyle, borderColor: '#ff450033' }}
+                      onFocus={(e) => { e.currentTarget.style.borderColor = '#ff450066'; }}
+                      onBlur={(e) => { e.currentTarget.style.borderColor = '#ff450033'; }}
+                    />
+                    <p style={{ fontSize: 11, color: '#555', fontFamily: 'monospace', marginTop: 6 }}>
+                      New domain detected. Name your organization.
+                    </p>
+                  </div>
+                )}
 
                 <div>
                   <label className="landing-eyebrow" style={{ display: 'block', marginBottom: 8, color: '#555' }}>Password</label>
