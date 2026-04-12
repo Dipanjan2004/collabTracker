@@ -816,25 +816,89 @@ export default function Landing() {
         </section>
 
         {/* ── FOOTER ─────────────────────────────────────────── */}
-        <footer style={{ borderTop: '1px solid rgba(255,255,255,0.06)', padding: '40px 0' }}>
-          <div style={{ display: 'flex', flexDirection: isSm ? 'row' : 'column', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div
-                style={{
-                  width: 28,
-                  height: 28,
-                  borderRadius: 8,
-                  background: 'linear-gradient(135deg, #f97316, #d97706)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <span style={{ fontSize: 9, fontWeight: 700, color: '#fff' }}>CT</span>
+        <footer style={{ borderTop: '1px solid rgba(255,255,255,0.06)', marginTop: 0 }}>
+          <div style={{ padding: '80px 0 0' }}>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: isLg ? '2fr 1fr 1fr 1fr 1fr' : isMd ? '1fr 1fr 1fr' : '1fr',
+              gap: isLg ? 48 : isMd ? 40 : 32,
+            }}>
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff4500" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20M17 5l-10 14M7 5l10 14M2 12h20"></path></svg>
+                  <span style={{ fontSize: 16, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: '#fff' }}>CollabTrack</span>
+                </div>
+                <p style={{ fontSize: 14, lineHeight: 1.7, color: '#555', fontFamily: 'monospace', maxWidth: 320, margin: 0 }}>
+                  Task and progress tracking built for teams that move from brief to review to delivery quickly.
+                </p>
+                <div style={{ display: 'flex', gap: 12, marginTop: 24 }}>
+                  <a href="#" style={{ width: 36, height: 36, borderRadius: 4, border: '1px solid #1a1a1a', background: '#040404', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'border-color 0.2s, background 0.2s' }}
+                    onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#333'; e.currentTarget.style.background = '#0a0a0a'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#1a1a1a'; e.currentTarget.style.background = '#040404'; }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#888" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                  </a>
+                  <a href="#" style={{ width: 36, height: 36, borderRadius: 4, border: '1px solid #1a1a1a', background: '#040404', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'border-color 0.2s, background 0.2s' }}
+                    onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#333'; e.currentTarget.style.background = '#0a0a0a'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#1a1a1a'; e.currentTarget.style.background = '#040404'; }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#888" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>
+                  </a>
+                  <a href="#" style={{ width: 36, height: 36, borderRadius: 4, border: '1px solid #1a1a1a', background: '#040404', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'border-color 0.2s, background 0.2s' }}
+                    onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#333'; e.currentTarget.style.background = '#0a0a0a'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#1a1a1a'; e.currentTarget.style.background = '#040404'; }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#888" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                  </a>
+                </div>
               </div>
-              <span style={{ fontSize: 14, fontWeight: 500, color: 'rgba(255,255,255,0.45)' }}>CollabTrack</span>
+
+              <div>
+                <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase', color: '#fff', fontFamily: 'monospace', marginBottom: 20 }}>Product</p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  {['Features', 'Pricing', 'Changelog', 'Documentation', 'API Reference'].map((item) => (
+                    <a key={item} href="#" style={{ fontSize: 14, color: '#555', fontFamily: 'monospace', textDecoration: 'none', transition: 'color 0.2s' }}
+                      onMouseEnter={(e) => { e.currentTarget.style.color = '#fff'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.color = '#555'; }}>{item}</a>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase', color: '#fff', fontFamily: 'monospace', marginBottom: 20 }}>Company</p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  {['About', 'Blog', 'Careers', 'Press', 'Contact'].map((item) => (
+                    <a key={item} href="#" style={{ fontSize: 14, color: '#555', fontFamily: 'monospace', textDecoration: 'none', transition: 'color 0.2s' }}
+                      onMouseEnter={(e) => { e.currentTarget.style.color = '#fff'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.color = '#555'; }}>{item}</a>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase', color: '#fff', fontFamily: 'monospace', marginBottom: 20 }}>Resources</p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  {['Community', 'Help Center', 'Templates', 'Guides', 'Status'].map((item) => (
+                    <a key={item} href="#" style={{ fontSize: 14, color: '#555', fontFamily: 'monospace', textDecoration: 'none', transition: 'color 0.2s' }}
+                      onMouseEnter={(e) => { e.currentTarget.style.color = '#fff'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.color = '#555'; }}>{item}</a>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase', color: '#fff', fontFamily: 'monospace', marginBottom: 20 }}>Legal</p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  {['Privacy', 'Terms', 'Security', 'Cookie Policy'].map((item) => (
+                    <a key={item} href="#" style={{ fontSize: 14, color: '#555', fontFamily: 'monospace', textDecoration: 'none', transition: 'color 0.2s' }}
+                      onMouseEnter={(e) => { e.currentTarget.style.color = '#fff'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.color = '#555'; }}>{item}</a>
+                  ))}
+                </div>
+              </div>
             </div>
-            <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.25)', margin: 0 }}>Built with the MERN stack · Task & progress tracking for creative teams</p>
+
+            <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', marginTop: 56, padding: '24px 0', display: 'flex', flexDirection: isSm ? 'row' : 'column', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+              <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.25)', margin: 0, fontFamily: 'monospace' }}>&copy; {new Date().getFullYear()} CollabTrack. All rights reserved.</p>
+              <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.18)', margin: 0, fontFamily: 'monospace' }}>Task &amp; progress tracking for creative teams</p>
+            </div>
           </div>
         </footer>
       </div>

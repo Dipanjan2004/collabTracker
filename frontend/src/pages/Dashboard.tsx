@@ -33,17 +33,17 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { format } from 'date-fns';
 
 const statusColors = {
-  todo: 'border-slate-200 bg-slate-100 text-slate-700',
-  'in-progress': 'border-blue-200 bg-blue-50 text-blue-700',
-  blocked: 'border-rose-200 bg-rose-50 text-rose-700',
-  review: 'border-amber-200 bg-amber-50 text-amber-700',
-  done: 'border-emerald-200 bg-emerald-50 text-emerald-700',
+  todo: 'border-white/10 bg-white/5 text-white/60',
+  'in-progress': 'border-blue-500/20 bg-blue-500/10 text-blue-400',
+  blocked: 'border-rose-500/20 bg-rose-500/10 text-rose-400',
+  review: 'border-amber-500/20 bg-amber-500/10 text-amber-400',
+  done: 'border-emerald-500/20 bg-emerald-500/10 text-emerald-400',
 };
 
 const priorityColors = {
-  low: 'border-emerald-200 bg-emerald-50 text-emerald-700',
-  medium: 'border-amber-200 bg-amber-50 text-amber-700',
-  high: 'border-rose-200 bg-rose-50 text-rose-700',
+  low: 'border-emerald-500/20 bg-emerald-500/10 text-emerald-400',
+  medium: 'border-amber-500/20 bg-amber-500/10 text-amber-400',
+  high: 'border-rose-500/20 bg-rose-500/10 text-rose-400',
 };
 
 export default function Dashboard() {
@@ -150,18 +150,18 @@ export default function Dashboard() {
         <div className="section-header">
           <div>
             <p className="eyebrow">Overview</p>
-            <h1 className="mt-2 text-3xl font-extrabold tracking-tight md:text-4xl">
+            <h1 className="app-heading mt-2 text-3xl md:text-4xl">
             Welcome back, {user?.name}!
             </h1>
-            <p className="mt-2 max-w-2xl text-sm md:text-base text-muted-foreground">
+            <p className="mt-2 max-w-2xl text-sm md:text-base text-white/40" style={{ fontFamily: 'monospace' }}>
             {user?.role === 'admin'
               ? "Here's an overview of your team's progress"
               : "Here's your task overview"}
             </p>
           </div>
           <div className="surface-subtle px-4 py-3">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary/70">Workspace health</p>
-            <p className="mt-1 text-sm text-muted-foreground">Tasks, contributors, and time signals in one place.</p>
+            <p className="eyebrow">Workspace health</p>
+            <p className="mt-1 text-sm text-white/30" style={{ fontFamily: 'monospace' }}>Tasks, contributors, and time signals in one place.</p>
           </div>
         </div>
 

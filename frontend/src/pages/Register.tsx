@@ -1,12 +1,8 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2 } from 'lucide-react';
+import { Loader2, ArrowRight } from 'lucide-react';
 
 export default function Register() {
   const navigate = useNavigate();
@@ -18,6 +14,18 @@ export default function Register() {
     email: '',
     password: '',
     confirmPassword: '',
+  });
+  const formRef = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    setVisible(true);
+  }, []);
+
+  const revealStyle = (v: boolean, delay = 0): React.CSSProperties => ({
+    opacity: v ? 1 : 0,
+    transform: v ? 'translateY(0)' : 'translateY(28px)',
+    transition: `opacity 0.7s cubic-bezier(.16,1,.3,1) ${delay}s, transform 0.7s cubic-bezier(.16,1,.3,1) ${delay}s`,
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -61,113 +69,172 @@ export default function Register() {
     }
   };
 
+  const inputStyle: React.CSSProperties = {
+    width: '100%',
+    background: '#111',
+    border: '1px solid #333',
+    borderRadius: 4,
+    padding: '12px 16px',
+    fontSize: 14,
+    fontFamily: 'monospace',
+    color: '#fff',
+    outline: 'none',
+    transition: 'border-color 0.2s',
+  };
+
   return (
-    <div className="min-h-screen bg-background px-3 py-10 md:px-4">
-      <div className="mx-auto grid min-h-[calc(100vh-5rem)] w-full max-w-6xl items-center gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-        <div className="hidden rounded-[2rem] bg-[linear-gradient(135deg,hsl(214_72%_30%)_0%,hsl(215_67%_37%)_55%,hsl(203_72%_46%)_100%)] p-10 text-white shadow-[0_24px_60px_-32px_rgba(15,23,42,0.45)] lg:block">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/70">CollabTrack</p>
-          <h1 className="mt-6 max-w-md text-5xl font-extrabold tracking-tight">
-            Set up a workspace that looks organized from day one.
-          </h1>
-          <p className="mt-6 max-w-lg text-base leading-7 text-white/78">
-            Create your account to start coordinating delivery, collecting progress updates, and reporting with less friction.
-          </p>
-        </div>
-
-        <div className="w-full max-w-md justify-self-center space-y-4 md:space-y-6">
-        <div className="text-center">
-          <p className="eyebrow">Create Account</p>
-          <h1 className="mb-2 mt-2 text-3xl font-extrabold tracking-tight text-foreground">Join CollabTrack</h1>
-          <p className="text-sm md:text-base text-muted-foreground">Create your account and start managing work with a cleaner operating rhythm.</p>
-        </div>
-
-        <Card className="glass-card space-y-4 p-5 md:space-y-6 md:p-7">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
-              <Input
-                id="name"
-                type="text"
-                placeholder="John Doe"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="your@email.com"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm Password</Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                placeholder="••••••••"
-                value={formData.confirmPassword}
-                onChange={(e) =>
-                  setFormData({ ...formData, confirmPassword: e.target.value })
-                }
-                required
-              />
-            </div>
-
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Creating account...
-                </>
-              ) : (
-                'Create Account'
-              )}
-            </Button>
-          </form>
-
-          <div className="text-center text-sm">
-            <span className="text-muted-foreground">Already have an account? </span>
-            <button
-              type="button"
-              onClick={() => navigate('/auth/login')}
-              className="text-primary hover:underline"
-            >
-              Sign in
-            </button>
-          </div>
-        </Card>
-
-        <div className="text-center">
+    <div className="landing-page">
+      <header style={{ position: 'sticky', top: 0, zIndex: 50, backgroundColor: '#000' }}>
+        <div className="landing-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 20px' }}>
           <button
             type="button"
             onClick={() => navigate('/')}
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            style={{ display: 'flex', alignItems: 'center', gap: 10, background: 'none', border: 'none', cursor: 'pointer', color: '#fff', padding: 0 }}
           >
-            ← Back to home
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20M17 5l-10 14M7 5l10 14M2 12h20"></path></svg>
+            <span style={{ fontSize: 16, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase' }}>CollabTrack</span>
           </button>
         </div>
-        </div>
+      </header>
+
+      <div className="landing-container">
+        <section style={{ minHeight: 'calc(100vh - 80px)', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '64px 0', maxWidth: 520, margin: '0 auto' }}>
+          <div ref={formRef} style={revealStyle(visible)}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 24 }}>
+              <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#ff4500' }} />
+              <span className="landing-eyebrow">Create Account</span>
+            </div>
+
+            <h1 className="landing-heading landing-heading-hero" style={{ margin: 0 }}>
+              Join the<br />workspace.
+            </h1>
+
+            <p className="landing-body" style={{ marginTop: 24, maxWidth: 440 }}>
+              Create your account to start coordinating delivery, collecting progress updates, and reporting with less friction.
+            </p>
+
+            <div style={{ marginTop: 48, borderRadius: 8, border: '1px solid #1a1a1a', background: '#0a0a0a', padding: 32 }}>
+              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+                <div>
+                  <label className="landing-eyebrow" style={{ display: 'block', marginBottom: 8, color: '#555' }}>Full Name</label>
+                  <input
+                    type="text"
+                    placeholder="John Doe"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    required
+                    style={inputStyle}
+                    onFocus={(e) => { e.currentTarget.style.borderColor = '#555'; }}
+                    onBlur={(e) => { e.currentTarget.style.borderColor = '#333'; }}
+                  />
+                </div>
+
+                <div>
+                  <label className="landing-eyebrow" style={{ display: 'block', marginBottom: 8, color: '#555' }}>Email</label>
+                  <input
+                    type="email"
+                    placeholder="your@email.com"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    required
+                    style={inputStyle}
+                    onFocus={(e) => { e.currentTarget.style.borderColor = '#555'; }}
+                    onBlur={(e) => { e.currentTarget.style.borderColor = '#333'; }}
+                  />
+                </div>
+
+                <div>
+                  <label className="landing-eyebrow" style={{ display: 'block', marginBottom: 8, color: '#555' }}>Password</label>
+                  <input
+                    type="password"
+                    placeholder="••••••••"
+                    value={formData.password}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    required
+                    style={inputStyle}
+                    onFocus={(e) => { e.currentTarget.style.borderColor = '#555'; }}
+                    onBlur={(e) => { e.currentTarget.style.borderColor = '#333'; }}
+                  />
+                </div>
+
+                <div>
+                  <label className="landing-eyebrow" style={{ display: 'block', marginBottom: 8, color: '#555' }}>Confirm Password</label>
+                  <input
+                    type="password"
+                    placeholder="••••••••"
+                    value={formData.confirmPassword}
+                    onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                    required
+                    style={inputStyle}
+                    onFocus={(e) => { e.currentTarget.style.borderColor = '#555'; }}
+                    onBlur={(e) => { e.currentTarget.style.borderColor = '#333'; }}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="landing-btn-primary"
+                  style={{ width: '100%', marginTop: 8, opacity: isLoading ? 0.7 : 1 }}
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 style={{ width: 14, height: 14, animation: 'spin 1s linear infinite' }} />
+                      Creating account...
+                    </>
+                  ) : (
+                    <>
+                      CREATE ACCOUNT
+                      <ArrowRight style={{ width: 14, height: 14 }} />
+                    </>
+                  )}
+                </button>
+              </form>
+
+              <div style={{ marginTop: 24, textAlign: 'center' }}>
+                <span style={{ fontSize: 13, color: '#555', fontFamily: 'monospace' }}>
+                  Already have an account?{' '}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => navigate('/auth/login')}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, fontFamily: 'monospace', color: '#ff4500', textDecoration: 'underline' }}
+                >
+                  Sign in
+                </button>
+              </div>
+            </div>
+
+            <div style={{ marginTop: 32, textAlign: 'center' }}>
+              <button
+                type="button"
+                onClick={() => navigate('/')}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, fontFamily: 'monospace', color: '#555', transition: 'color 0.2s' }}
+                onMouseEnter={(e) => { e.currentTarget.style.color = '#fff'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.color = '#555'; }}
+              >
+                &larr; Back to home
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <footer style={{ borderTop: '1px solid rgba(255,255,255,0.06)', padding: '40px 0' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: 'linear-gradient(135deg, #f97316, #d97706)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <span style={{ fontSize: 9, fontWeight: 700, color: '#fff' }}>CT</span>
+            </div>
+            <span style={{ fontSize: 14, fontWeight: 500, color: 'rgba(255,255,255,0.45)' }}>CollabTrack</span>
+          </div>
+        </footer>
       </div>
+
+      <style>{`
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 }

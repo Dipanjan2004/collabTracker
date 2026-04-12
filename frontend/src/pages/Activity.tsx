@@ -40,10 +40,15 @@ export default function Activity() {
 
   return (
     <AppShell>
-      <div className="space-y-6 animate-fade-in">
-        <div>
-          <h1 className="text-3xl font-bold mb-2">Activity Feed</h1>
-          <p className="text-muted-foreground">Recent actions and updates across the platform</p>
+      <div className="page-shell space-y-6 animate-fade-in">
+        <div className="section-header">
+          <div>
+            <p className="eyebrow">Audit Trail</p>
+            <h1 className="app-heading mt-2 text-3xl md:text-4xl">Activity Feed</h1>
+            <p className="mt-2 text-sm md:text-base text-muted-foreground">
+              Recent actions and updates across the platform
+            </p>
+          </div>
         </div>
 
         <div className="space-y-4">

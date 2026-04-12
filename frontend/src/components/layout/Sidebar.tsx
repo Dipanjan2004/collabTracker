@@ -64,7 +64,7 @@ const SidebarContent = ({ collapsed, onToggleCollapse }: { collapsed: boolean; o
               "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground",
               collapsed && "justify-center px-2"
             )}
-            activeClassName="bg-white text-sidebar-primary-foreground shadow-sm"
+            activeClassName="bg-primary text-white shadow-sm"
           >
             <item.icon className="h-5 w-5 flex-shrink-0" />
             {!collapsed && <span>{item.title}</span>}
@@ -92,9 +92,9 @@ export function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
   return (
     <>
       {/* Desktop Sidebar */}
-      <aside 
+      <aside
         className={cn(
-          "sticky top-20 hidden h-[calc(100vh-6rem)] border border-sidebar-border bg-sidebar shadow-[0_24px_60px_-32px_rgba(15,23,42,0.45)] transition-all duration-300 md:ml-6 md:mt-6 md:block md:rounded-3xl",
+          "sticky top-0 hidden h-screen border-r border-sidebar-border bg-sidebar transition-all duration-300 md:block",
           collapsed ? "w-16" : "w-64"
         )}
       >

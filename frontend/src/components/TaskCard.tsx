@@ -28,17 +28,17 @@ interface TaskCardProps {
 }
 
 const priorityColors = {
-  low: 'border-emerald-200 bg-emerald-50 text-emerald-700',
-  medium: 'border-amber-200 bg-amber-50 text-amber-700',
-  high: 'border-rose-200 bg-rose-50 text-rose-700',
+  low: 'border-emerald-500/20 bg-emerald-500/10 text-emerald-400',
+  medium: 'border-amber-500/20 bg-amber-500/10 text-amber-400',
+  high: 'border-rose-500/20 bg-rose-500/10 text-rose-400',
 };
 
 const statusColors = {
-  todo: 'border-slate-200 bg-slate-100 text-slate-700',
-  'in-progress': 'border-blue-200 bg-blue-50 text-blue-700',
-  blocked: 'border-rose-200 bg-rose-50 text-rose-700',
-  review: 'border-amber-200 bg-amber-50 text-amber-700',
-  done: 'border-emerald-200 bg-emerald-50 text-emerald-700',
+  todo: 'border-white/10 bg-white/5 text-white/60',
+  'in-progress': 'border-blue-500/20 bg-blue-500/10 text-blue-400',
+  blocked: 'border-rose-500/20 bg-rose-500/10 text-rose-400',
+  review: 'border-amber-500/20 bg-amber-500/10 text-amber-400',
+  done: 'border-emerald-500/20 bg-emerald-500/10 text-emerald-400',
 };
 
 export function TaskCard({ task, progressLogs = [], onDelete, onStatusChange, onArchive, onClone, showDelete = false, compact = false, isSelected = false, onSelect, showCheckbox = false, isArchived = false }: TaskCardProps) {
@@ -88,7 +88,7 @@ export function TaskCard({ task, progressLogs = [], onDelete, onStatusChange, on
       )}
       onClick={() => !showDelete && navigate(`/tasks/${task.id}`)}
     >
-      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary/70 via-primary to-accent-warm/70" />
+      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#ff4500]/50 via-[#ff4500] to-[#ff4500]/50" />
       <div className={cn("space-y-3", showDelete && "pr-10")}>
         <div className="flex items-start justify-between gap-2">
           {showCheckbox && onSelect && (
@@ -108,7 +108,7 @@ export function TaskCard({ task, progressLogs = [], onDelete, onStatusChange, on
               )}
             </Button>
           )}
-          <h3 className={cn("flex-1 line-clamp-2 text-base font-semibold tracking-tight", showDelete && "cursor-pointer", showCheckbox && "cursor-pointer")} onClick={() => navigate(`/tasks/${task.id}`)}>
+          <h3 className={cn("flex-1 line-clamp-2 text-base font-semibold tracking-tight text-white", showDelete && "cursor-pointer", showCheckbox && "cursor-pointer")} onClick={() => navigate(`/tasks/${task.id}`)}>
             {task.title}
           </h3>
           <div className="flex items-center gap-2 flex-shrink-0">
@@ -138,14 +138,14 @@ export function TaskCard({ task, progressLogs = [], onDelete, onStatusChange, on
         </div>
 
         <div className="space-y-1">
-          <div className="flex items-center justify-between text-xs text-muted-foreground">
+          <div className="flex items-center justify-between text-xs text-white/40" style={{ fontFamily: 'monospace' }}>
             <span className="font-medium">Progress</span>
-            <span className="font-semibold text-foreground">{latestProgress}%</span>
+            <span className="font-semibold text-white">{latestProgress}%</span>
           </div>
           <Progress value={latestProgress} className="h-2" />
         </div>
 
-        <div className="flex items-center justify-between text-xs text-muted-foreground">
+        <div className="flex items-center justify-between text-xs text-white/40" style={{ fontFamily: 'monospace' }}>
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-1">
               <Calendar className="h-3 w-3" />

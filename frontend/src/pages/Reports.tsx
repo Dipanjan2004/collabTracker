@@ -73,10 +73,15 @@ export default function Reports() {
 
   return (
     <AppShell>
-      <div className="space-y-6 animate-fade-in">
-        <div>
-          <h1 className="text-3xl font-bold mb-2">Reports</h1>
-          <p className="text-muted-foreground">Generate and export task progress reports</p>
+      <div className="page-shell space-y-6 animate-fade-in">
+        <div className="section-header">
+          <div>
+            <p className="eyebrow">Exports</p>
+            <h1 className="app-heading mt-2 text-3xl md:text-4xl">Reports</h1>
+            <p className="mt-2 text-sm md:text-base text-muted-foreground">
+              Generate and export task progress reports
+            </p>
+          </div>
         </div>
 
         <Card className="glass-card p-6 max-w-2xl">
@@ -128,7 +133,7 @@ export default function Reports() {
 
         {/* Saved Reports Section */}
         <div>
-          <h2 className="text-2xl font-semibold mb-4">Recent Reports</h2>
+          <h2 className="app-heading text-2xl font-semibold mb-4">Recent Reports</h2>
           <Card className="glass-card p-8 text-center">
             <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
             <p className="text-muted-foreground">No saved reports yet.</p>

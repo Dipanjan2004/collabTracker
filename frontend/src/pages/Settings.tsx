@@ -25,10 +25,15 @@ export default function Settings() {
 
   return (
     <AppShell>
-      <div className="space-y-6 animate-fade-in max-w-3xl">
-        <div>
-          <h1 className="text-3xl font-bold mb-2">Settings</h1>
-          <p className="text-muted-foreground">Manage your account and preferences</p>
+      <div className="page-shell space-y-6 animate-fade-in max-w-3xl">
+        <div className="section-header">
+          <div>
+            <p className="eyebrow">Configuration</p>
+            <h1 className="app-heading mt-2 text-3xl md:text-4xl">Settings</h1>
+            <p className="mt-2 text-sm md:text-base text-muted-foreground">
+              Manage your account and preferences
+            </p>
+          </div>
         </div>
 
         {/* Profile Settings */}

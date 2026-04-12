@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Manrope:wght@400;500;600;700;800&family=Merriweather:ital,opsz,wght@0,18..144,100..900;1,18..144,100..900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -10,55 +10,55 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 210 33% 98%;
-    --foreground: 222 31% 16%;
+    --background: 0 0% 4%;
+    --foreground: 0 0% 95%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222 31% 16%;
+    --card: 0 0% 5%;
+    --card-foreground: 0 0% 90%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 31% 16%;
+    --popover: 0 0% 6%;
+    --popover-foreground: 0 0% 90%;
 
-    --primary: 215 67% 37%;
-    --primary-foreground: 210 40% 98%;
-    --primary-glow: 215 90% 60%;
+    --primary: 16 100% 50%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 16 100% 55%;
 
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222 31% 20%;
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 0 0% 80%;
 
-    --muted: 210 24% 94%;
-    --muted-foreground: 215 16% 43%;
+    --muted: 0 0% 10%;
+    --muted-foreground: 0 0% 50%;
 
-    --accent: 205 73% 93%;
-    --accent-foreground: 215 67% 29%;
-    --accent-warm: 205 73% 56%;
+    --accent: 0 0% 12%;
+    --accent-foreground: 0 0% 80%;
+    --accent-warm: 16 100% 55%;
 
     --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214 25% 88%;
-    --input: 214 25% 88%;
-    --ring: 215 67% 37%;
+    --border: 0 0% 14%;
+    --input: 0 0% 14%;
+    --ring: 16 100% 50%;
 
     --radius: 1rem;
 
-    --gradient-primary: linear-gradient(135deg, hsl(214 72% 30%) 0%, hsl(215 67% 37%) 55%, hsl(207 76% 45%) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(205 73% 93%) 0%, hsl(210 40% 98%) 100%);
-    --gradient-mint: linear-gradient(135deg, hsl(215 67% 37%) 0%, hsl(203 72% 46%) 100%);
-    --glass-bg: rgba(255, 255, 255, 0.8);
-    --glass-border: rgba(148, 163, 184, 0.18);
-    --shadow-glow: 0 18px 40px -28px hsla(215, 67%, 37%, 0.45);
-    --shadow-card: 0 24px 60px -32px hsla(220, 43%, 16%, 0.18);
+    --gradient-primary: linear-gradient(135deg, hsl(16 100% 40%) 0%, hsl(16 100% 50%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(0 0% 8%) 0%, hsl(0 0% 12%) 100%);
+    --gradient-mint: linear-gradient(135deg, hsl(16 100% 45%) 0%, hsl(20 100% 55%) 100%);
+    --glass-bg: rgba(10, 10, 10, 0.9);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --shadow-glow: 0 18px 40px -28px hsla(16, 100%, 50%, 0.25);
+    --shadow-card: 0 24px 60px -32px hsla(0, 0%, 0%, 0.5);
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-    --sidebar-background: 214 43% 18%;
-    --sidebar-foreground: 210 40% 96%;
-    --sidebar-primary: 0 0% 100%;
-    --sidebar-primary-foreground: 214 43% 18%;
-    --sidebar-accent: 215 35% 25%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 214 34% 24%;
-    --sidebar-ring: 206 100% 67%;
+    --sidebar-background: 0 0% 5%;
+    --sidebar-foreground: 0 0% 85%;
+    --sidebar-primary: 16 100% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 10%;
+    --sidebar-accent-foreground: 0 0% 85%;
+    --sidebar-border: 0 0% 14%;
+    --sidebar-ring: 16 100% 50%;
   }
 }
 
@@ -69,10 +69,7 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
-    background-image: 
-      radial-gradient(circle at top left, hsla(213, 78%, 92%, 0.95) 0%, transparent 34%),
-      radial-gradient(circle at bottom right, hsla(201, 87%, 94%, 0.7) 0%, transparent 28%),
-      linear-gradient(180deg, hsl(210 33% 99%) 0%, hsl(210 27% 97%) 100%);
+    background-color: #000;
     font-feature-settings: "ss01" 1, "cv01" 1, "cv11" 1;
   }
 
@@ -93,7 +90,7 @@ All colors MUST be HSL.
   }
 
   .surface-subtle {
-    @apply rounded-2xl border border-border/70 bg-white/70 backdrop-blur-sm;
+    @apply rounded-2xl border border-border/60 bg-secondary/50 backdrop-blur-sm;
   }
 
   .page-shell {
@@ -105,7 +102,12 @@ All colors MUST be HSL.
   }
 
   .eyebrow {
-    @apply text-xs font-semibold uppercase tracking-[0.18em] text-primary/70;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #888;
+    font-family: monospace;
   }
 
   .text-gradient-primary {
@@ -124,6 +126,120 @@ All colors MUST be HSL.
 
   .glow-primary {
     box-shadow: var(--shadow-glow);
+  }
+
+  .landing-page {
+    min-height: 100vh;
+    background-color: #000000;
+    color: #ffffff;
+    font-family: 'Inter', 'Manrope', system-ui, -apple-system, sans-serif;
+  }
+
+  .landing-container {
+    max-width: 1320px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .landing-heading {
+    font-family: 'Merriweather', serif;
+    font-weight: 100;
+    font-stretch: extra-condensed;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-stroke: 1.2px #000;
+    opacity: 0.9;
+    font-optical-sizing: auto;
+    font-variation-settings: "wdth" 25;
+  }
+
+  .landing-heading-hero {
+    font-size: clamp(2.6rem, 5.5vw, 4.8rem);
+    line-height: 1.1;
+    letter-spacing: -0.04em;
+  }
+
+  .landing-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #888;
+    font-family: monospace;
+  }
+
+  .landing-body {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #888;
+    font-family: monospace;
+  }
+
+  .landing-card {
+    border-radius: 8px;
+    border: 1px solid #1a1a1a;
+    background: #040404;
+    transition: border-color 0.3s, background 0.3s;
+  }
+
+  .landing-card:hover {
+    border-color: #333;
+    background: #0a0a0a;
+  }
+
+  .landing-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 4px;
+    background: #fff;
+    border: none;
+    cursor: pointer;
+    padding: 12px 24px;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: monospace;
+    color: #000;
+    transition: background 0.2s;
+  }
+
+  .landing-btn-primary:hover {
+    background: #ddd;
+  }
+
+  .landing-btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 4px;
+    background: #111;
+    border: 1px solid #333;
+    cursor: pointer;
+    padding: 12px 24px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: monospace;
+    color: #fff;
+    transition: background 0.2s, border-color 0.2s;
+  }
+
+  .landing-btn-secondary:hover {
+    background: #222;
+    border-color: #555;
+  }
+
+  .app-heading {
+    font-family: 'Merriweather', serif;
+    font-weight: 300;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: #fff;
   }
 }
 
