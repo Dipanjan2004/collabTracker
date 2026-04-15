@@ -325,12 +325,12 @@ export default function Landing() {
             gridTemplateColumns: isLg ? '1fr 1fr' : undefined,
             alignItems: 'center',
             gap: isLg ? 64 : 48,
-            minHeight: '100vh',
-            padding: isLg ? '96px 0' : '64px 0',
+            minHeight: isLg ? '100vh' : 'auto',
+            padding: isLg ? '96px 0' : isMd ? '64px 0' : '40px 0',
           }}
         >
           {/* Left — Copy */}
-          <div style={{ ...reveal(heroReveal.visible), marginLeft: -80, marginTop: -120 }}>
+          <div style={{ ...reveal(heroReveal.visible), marginLeft: isLg ? -80 : 0, marginTop: isLg ? -120 : 0 }}>
             {/* Badge */}
             <div
               style={{
@@ -397,7 +397,7 @@ export default function Landing() {
                 <span style={{ fontSize: 11, fontFamily: 'monospace', color: '#444', border: '1px solid #1a1a1a', borderRadius: 4, padding: '4px 8px', letterSpacing: '0.02em' }}>SELF-HOSTED</span>
               </div>
               <div style={{ padding: '24px 20px' }}>
-                <div style={{ display: 'flex', gap: 12, marginBottom: 28 }}>
+                <div style={{ display: 'flex', flexDirection: isSm ? 'row' : 'column', gap: 12, marginBottom: 28 }}>
                   <button
                     onClick={() => navigate('/auth/login')}
                     style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: '#fff', color: '#000', border: 'none', padding: '10px 0', borderRadius: 6, fontSize: 11, fontFamily: 'monospace', fontWeight: 600, cursor: 'pointer' }}
@@ -425,7 +425,7 @@ export default function Landing() {
             </div>
 
             {/* Stat cards styled minimally */}
-            <div style={{ marginTop: 32, display: 'flex', gap: 32 }}>
+            <div style={{ marginTop: 32, display: 'flex', flexWrap: 'wrap', gap: isSm ? 32 : 20 }}>
               {statItems.map((item, i) => (
                 <div key={item.label} style={{ ...reveal(heroReveal.visible, 0.15 + i * 0.1) }}>
                   <p style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase' as const, color: '#555', margin: 0, fontFamily: 'monospace' }}>{item.label}</p>
@@ -508,13 +508,13 @@ export default function Landing() {
         {/* ── TEAMS SECTION ────────────────────────────────── */}
         <section
           ref={teamsReveal.ref}
-          style={{ borderTop: '1px solid #1a1a1a', padding: isLg ? '112px 0' : '80px 0', minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
+          style={{ borderTop: '1px solid #1a1a1a', padding: isLg ? '112px 0' : isMd ? '80px 0' : '56px 0', minHeight: isLg ? '100vh' : 'auto', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
         >
           <div
             style={{
               display: 'flex',
               flexDirection: 'column',
-              gap: 56,
+              gap: isMd ? 56 : 40,
             }}
           >
             <div style={reveal(teamsReveal.visible)}>
@@ -611,7 +611,7 @@ export default function Landing() {
         {/* ── CAPABILITIES ───────────────────────────────────── */}
         <section
           ref={capsReveal.ref}
-          style={{ borderTop: '1px solid #1a1a1a', padding: isLg ? '112px 0' : '80px 0', minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
+          style={{ borderTop: '1px solid #1a1a1a', padding: isLg ? '112px 0' : isMd ? '80px 0' : '56px 0', minHeight: isLg ? '100vh' : 'auto', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
         >
           <div style={{ ...reveal(capsReveal.visible), maxWidth: 720 }}>
             {/* Badge */}
@@ -700,7 +700,7 @@ export default function Landing() {
         {/* ── CTA SECTION ────────────────────────────────────── */}
         <section
           ref={ctaReveal.ref}
-          style={{ borderTop: '1px solid #1a1a1a', padding: isLg ? '112px 0' : '80px 0', minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
+          style={{ borderTop: '1px solid #1a1a1a', padding: isLg ? '112px 0' : isMd ? '80px 0' : '56px 0', minHeight: isLg ? '100vh' : 'auto', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
         >
           <div
             style={{
