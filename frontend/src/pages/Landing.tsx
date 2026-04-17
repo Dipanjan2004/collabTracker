@@ -132,13 +132,17 @@ const css = {
     backgroundColor: '#000000',
     color: '#ffffff',
     fontFamily: "'Inter', 'Manrope', system-ui, -apple-system, sans-serif",
+    overflowX: 'hidden' as const,
+    width: '100%',
   },
   container: {
     maxWidth: 1320,
     marginLeft: 'auto',
     marginRight: 'auto',
-    paddingLeft: 20,
-    paddingRight: 20,
+    paddingLeft: 'clamp(16px, 4vw, 32px)',
+    paddingRight: 'clamp(16px, 4vw, 32px)',
+    width: '100%',
+    boxSizing: 'border-box' as const,
   },
 } as const;
 
@@ -158,8 +162,8 @@ function CliTyper() {
   }
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#0a0a0a', border: '1px solid #333', borderRadius: 6, padding: '14px 16px' }}>
-      <span style={{ color: '#fff', fontFamily: 'monospace', fontSize: 14, whiteSpace: 'nowrap' }}>
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#0a0a0a', border: '1px solid #333', borderRadius: 6, padding: '14px 16px', minWidth: 0, overflow: 'hidden' }}>
+      <span style={{ color: '#fff', fontFamily: 'monospace', fontSize: 13, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', minWidth: 0, flex: 1 }}>
         <span style={{ color: '#ff4500', marginRight: 8, fontWeight: 'bold' }}>&gt;</span>
         {displayed}
         <span style={{ opacity: showCursor ? 1 : 0, color: '#ff4500', fontWeight: 100, marginLeft: 1 }}>|</span>
@@ -192,9 +196,11 @@ export default function Landing() {
     return () => window.removeEventListener('resize', handler);
   }, []);
 
+  const isXl = winW >= 1280;
   const isLg = winW >= 1024;
   const isMd = winW >= 768;
   const isSm = winW >= 640;
+  const isXs = winW >= 480;
 
   return (
     <div style={css.page}>
@@ -213,7 +219,8 @@ export default function Landing() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            padding: '20px 20px',
+            paddingTop: 16,
+            paddingBottom: 16,
           }}
         >
           {/* Logo */}
@@ -322,15 +329,14 @@ export default function Landing() {
           ref={heroReveal.ref}
           style={{
             display: isLg ? 'grid' : 'block',
-            gridTemplateColumns: isLg ? '1fr 1fr' : undefined,
+            gridTemplateColumns: isLg ? '1.05fr 1fr' : undefined,
             alignItems: 'center',
-            gap: isLg ? 64 : 48,
-            minHeight: isLg ? '100vh' : 'auto',
-            padding: isLg ? '96px 0' : isMd ? '64px 0' : '40px 0',
+            gap: isLg ? 48 : 40,
+            padding: isLg ? '80px 0' : isMd ? '56px 0' : '32px 0',
           }}
         >
           {/* Left — Copy */}
-          <div style={{ ...reveal(heroReveal.visible), marginLeft: isLg ? -80 : 0, marginTop: isLg ? -120 : 0 }}>
+          <div style={{ ...reveal(heroReveal.visible), minWidth: 0 }}>
             {/* Badge */}
             <div
               style={{
@@ -347,7 +353,7 @@ export default function Landing() {
             {/* Headline */}
             <h1
               style={{
-                fontSize: 'clamp(2.6rem, 5.5vw, 4.8rem)',
+                fontSize: 'clamp(2rem, 7vw, 4.8rem)',
                 fontWeight: 100,
                 lineHeight: 1.1,
                 letterSpacing: '-0.04em',
@@ -441,11 +447,12 @@ export default function Landing() {
               style={{
                 ...reveal(heroReveal.visible, 0.3),
                 position: 'relative',
-                minHeight: 680,
+                minHeight: isXl ? 620 : 520,
                 width: '100%',
+                overflow: 'hidden',
               }}
             >
-              <div style={{ position: 'relative', width: '100%', height: '100%', display: 'flex', flexDirection: 'column', gap: 80, paddingTop: 80, paddingLeft: 0 }}>
+              <div style={{ position: 'relative', width: '100%', height: '100%', display: 'flex', flexDirection: 'column', gap: isXl ? 72 : 56, paddingTop: 64, paddingLeft: 0 }}>
                 {/* Horizontal tracks with animated/static nodes */}
                 <div style={{ borderBottom: '1px dashed #222', width: '80%', position: 'relative' }}>
                   <div style={{ position: 'absolute', top: -14, left: '10%', width: 70, height: 28, background: '#111', border: '1px solid #333', borderRadius: 999, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 12px' }}>
@@ -485,7 +492,7 @@ export default function Landing() {
                 </div>
 
                 {/* Overlaid terminal view */}
-                <div style={{ position: 'absolute', top: 120, right: -80, background: '#0a0a0a', border: '1px solid #1a1a1a', borderRadius: 8, padding: '24px', minWidth: 280, fontFamily: 'monospace', fontSize: 11, color: '#666', boxShadow: '0 10px 40px rgba(0,0,0,0.5)' }}>
+                <div style={{ position: 'absolute', top: 100, right: isXl ? 0 : 8, background: '#0a0a0a', border: '1px solid #1a1a1a', borderRadius: 8, padding: '20px', width: isXl ? 280 : 240, maxWidth: '90%', fontFamily: 'monospace', fontSize: 11, color: '#666', boxShadow: '0 10px 40px rgba(0,0,0,0.5)' }}>
                   <div style={{ display: 'flex', gap: 6, marginBottom: 16 }}>
                     <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#333' }}></span>
                     <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#333' }}></span>
@@ -508,7 +515,7 @@ export default function Landing() {
         {/* ── TEAMS SECTION ────────────────────────────────── */}
         <section
           ref={teamsReveal.ref}
-          style={{ borderTop: '1px solid #1a1a1a', padding: isLg ? '112px 0' : isMd ? '80px 0' : '56px 0', minHeight: isLg ? '100vh' : 'auto', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
+          style={{ borderTop: '1px solid #1a1a1a', padding: isLg ? '96px 0' : isMd ? '72px 0' : '48px 0', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
         >
           <div
             style={{
@@ -533,7 +540,7 @@ export default function Landing() {
 
               <h2
                 style={{
-                  fontSize: 'clamp(2.6rem, 5.5vw, 4.8rem)',
+                  fontSize: 'clamp(2rem, 7vw, 4.8rem)',
                   fontWeight: 100,
                   lineHeight: 1.1,
                   letterSpacing: '-0.04em',
@@ -611,7 +618,7 @@ export default function Landing() {
         {/* ── CAPABILITIES ───────────────────────────────────── */}
         <section
           ref={capsReveal.ref}
-          style={{ borderTop: '1px solid #1a1a1a', padding: isLg ? '112px 0' : isMd ? '80px 0' : '56px 0', minHeight: isLg ? '100vh' : 'auto', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
+          style={{ borderTop: '1px solid #1a1a1a', padding: isLg ? '96px 0' : isMd ? '72px 0' : '48px 0', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
         >
           <div style={{ ...reveal(capsReveal.visible), maxWidth: 720 }}>
             {/* Badge */}
@@ -629,7 +636,7 @@ export default function Landing() {
 
             <h2
               style={{
-                fontSize: 'clamp(2.6rem, 5.5vw, 4.8rem)',
+                fontSize: 'clamp(2rem, 7vw, 4.8rem)',
                 fontWeight: 100,
                 lineHeight: 1.1,
                 letterSpacing: '-0.04em',
@@ -700,7 +707,7 @@ export default function Landing() {
         {/* ── CTA SECTION ────────────────────────────────────── */}
         <section
           ref={ctaReveal.ref}
-          style={{ borderTop: '1px solid #1a1a1a', padding: isLg ? '112px 0' : isMd ? '80px 0' : '56px 0', minHeight: isLg ? '100vh' : 'auto', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
+          style={{ borderTop: '1px solid #1a1a1a', padding: isLg ? '96px 0' : isMd ? '72px 0' : '48px 0', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
         >
           <div
             style={{
@@ -736,7 +743,7 @@ export default function Landing() {
 
                 <h2
                   style={{
-                    fontSize: 'clamp(2.6rem, 5.5vw, 4.8rem)',
+                    fontSize: 'clamp(2rem, 7vw, 4.8rem)',
                     fontWeight: 100,
                     lineHeight: 1.1,
                     letterSpacing: '-0.04em',
@@ -817,11 +824,11 @@ export default function Landing() {
 
         {/* ── FOOTER ─────────────────────────────────────────── */}
         <footer style={{ borderTop: '1px solid rgba(255,255,255,0.06)', marginTop: 0 }}>
-          <div style={{ padding: '80px 0 0' }}>
+          <div style={{ padding: isMd ? '72px 0 0' : '48px 0 0' }}>
             <div style={{
               display: 'grid',
-              gridTemplateColumns: isLg ? '2fr 1fr 1fr 1fr 1fr' : isMd ? '1fr 1fr 1fr' : '1fr',
-              gap: isLg ? 48 : isMd ? 40 : 32,
+              gridTemplateColumns: isLg ? '2fr 1fr 1fr 1fr 1fr' : isMd ? 'repeat(2, 1fr)' : isXs ? 'repeat(2, 1fr)' : '1fr',
+              gap: isLg ? 48 : isMd ? 40 : 28,
             }}>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
